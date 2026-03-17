@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kulyx/views/tab_bar.dart';
+import 'package:get/get.dart';
+import 'package:kulyx/routes/app_pages.dart';
+import 'package:kulyx/routes/app_routes.dart';
 
 void main() {
   runApp(const Kulyx());
@@ -10,8 +12,10 @@ class Kulyx extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TabBarComponent(),
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: AppRoutes.login,
+      getPages: AppPages.pages,
     );
   }
 }
