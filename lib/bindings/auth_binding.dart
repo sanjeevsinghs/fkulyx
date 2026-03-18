@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:kulyx/controllers/auth_controller.dart';
+import 'package:kulyx/features/auth/viewmodels/auth_viewmodel.dart';
 
 class AuthBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<AuthController>(() => AuthController());
+    Get.lazyPut<AuthViewModel>(() => AuthViewModel());
   }
 }

@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:kulyx/controllers/tab_bar_controller.dart';
+import 'package:kulyx/features/tabs/viewmodels/tab_viewmodel.dart';
 
-class TabBarBinding extends Bindings {
+class TabBinding extends Bindings {
   @override
   void dependencies() {
-      Get.lazyPut<TabBarController>(() => TabBarController());
+    Get.lazyPut<TabViewModel>(() => TabViewModel());
   }
 }
