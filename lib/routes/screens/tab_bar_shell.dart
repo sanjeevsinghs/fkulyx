@@ -31,22 +31,44 @@ class TabBarShell extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          backgroundColor: Colors.black,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: controller.currentIndex.value,
-          onTap: controller.changeTabIndex,
-          selectedItemColor: const Color(0xFFFF6A00),
-          unselectedItemColor: Colors.white,
-          items: TabRoutes.destinations
-              .map(
-                (destination) => BottomNavigationBarItem(
-                  icon: Icon(destination.icon),
-                  label: destination.label,
-                  activeIcon: Icon(destination.selectedIcon),
+        () => Container(
+          color: Colors.black,
+          child: SafeArea(
+            // top: false,
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.noScaling,
+              ),
+              child: BottomNavigationBar(
+                backgroundColor: Colors.black,
+                type: BottomNavigationBarType.fixed,
+                currentIndex: controller.currentIndex.value,
+                onTap: controller.changeTabIndex,
+                iconSize: 22,
+                selectedItemColor: const Color(0xFFFF6A00),
+                unselectedItemColor: Colors.white,
+                selectedFontSize: 10,
+                unselectedFontSize: 9,
+                selectedLabelStyle: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
                 ),
-              )
-              .toList(),
+                unselectedLabelStyle: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                ),
+                items: TabRoutes.destinations
+                    .map(
+                      (destination) => BottomNavigationBarItem(
+                        icon: Icon(destination.icon),
+                        label: destination.label,
+                        activeIcon: Icon(destination.selectedIcon),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
         ),
       ),
     );

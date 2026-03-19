@@ -44,7 +44,7 @@ class _LoginViewState extends State<LoginView> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 30, right: 30),
                   child: Image(
-                    image: AssetImage('assets/images/culinarry_tagline.png'),
+                    image: AssetImage('assets/images/culinary_tagline.png'),
                     fit: BoxFit.contain,
                   ),
                 ),

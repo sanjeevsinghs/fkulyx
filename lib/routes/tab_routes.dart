@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TabRouteNames {
   static const String home = 'home';
-  static const String marketPlace = 'market_place';
+  static const String marketplace = 'market_place';
   static const String lms = 'lms';
   static const String mealPlanner = 'meal_planner';
   static const String dashboard = 'dashboard';
@@ -31,8 +31,8 @@ class TabRoutes {
       selectedIcon: Icons.home_rounded,
     ),
     TabDestinationConfig(
-      key: TabRouteNames.marketPlace,
-      label: 'Market Place',
+      key: TabRouteNames.marketplace,
+      label: 'Marketplace',
       icon: Icons.shopping_bag_outlined,
       selectedIcon: Icons.shopping_bag_rounded,
     ),
@@ -44,7 +44,7 @@ class TabRoutes {
     ),
     TabDestinationConfig(
       key: TabRouteNames.mealPlanner,
-      label: 'Meal Planner',
+      label: 'MealPlan',
       icon: Icons.food_bank_outlined,
       selectedIcon: Icons.food_bank_rounded,
     ),
