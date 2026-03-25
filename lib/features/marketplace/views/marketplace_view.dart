@@ -33,6 +33,8 @@ class MarketplaceView extends StatelessWidget {
               ),
               child: TextField(
                 onChanged: viewModel.search,
+                enableInteractiveSelection: false,
+                contextMenuBuilder: (_, _) => const SizedBox.shrink(),
                 decoration: const InputDecoration(
                   hintText: 'Search products',
                   border: InputBorder.none,
@@ -51,7 +53,7 @@ class MarketplaceView extends StatelessWidget {
                           mainAxisSpacing: 10,
                           crossAxisSpacing: 10,
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
+                          // physics: const NeverScrollableScrollPhysics(),
                           childAspectRatio: 0.92,
                           children: viewModel.filteredProducts
                               .map((product) => _ProductCard(
@@ -80,20 +82,20 @@ class _ProductCard extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEAEAEA)),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFEAEAEA), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFF7F7F7),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Icon(Icons.image_outlined, color: Color(0xFF999999)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox.expand(
+                child: Image.asset(
+                  'assets/images/meal_planer_shop_now.jpg',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

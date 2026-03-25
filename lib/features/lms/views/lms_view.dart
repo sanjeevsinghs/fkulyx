@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/features/lms/viewmodels/lms_viewmodel.dart';
+import 'package:kulyx/widgets/custom_text_field.dart';
 
 class LmsView extends StatelessWidget {
   const LmsView({super.key});
@@ -42,8 +43,11 @@ class LmsView extends StatelessWidget {
                               );
                             },
                           ),
+                          
                         ),
+                        
             ),
+          
           ],
         ),
       ),
@@ -96,6 +100,14 @@ class _LessonTile extends StatelessWidget {
               color: const Color(0xFFFF6A00),
             ),
           ),
+            CustomTextFormField(
+              controller: TextEditingController(),
+              hintText: 'Search for anything',
+              prefixIcon: const Icon(Icons.search, color: Color(0xFF999999), size: 20),
+              borderRadius: 8,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+            ),
         ],
       ),
     );

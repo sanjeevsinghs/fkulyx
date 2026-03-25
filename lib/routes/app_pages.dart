@@ -23,7 +23,7 @@ class AppPages {
       bindings: [
         AuthBinding(),
         TabBinding(),
-        HomeBinding(),
+        // HomeBinding(),
         MarketplaceBinding(),
         LmsBinding(),
         MealPlannerBinding(),
