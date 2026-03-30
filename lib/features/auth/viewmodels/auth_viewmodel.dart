@@ -1,9 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/features/auth/models/auth_credentials.dart';
 import 'package:kulyx/features/auth/models/user_model.dart';
+import 'package:kulyx/network/api_base_service.dart';
+import 'package:kulyx/network/api_endpoints.dart';
+import 'package:kulyx/network/network_api_services.dart';
 import 'package:kulyx/routes/app_routes.dart';
 
 class AuthViewModel extends GetxController {
+  final NetworkApiServices _networkApiServices = NetworkApiServices();
+
   // State Variables
   final Rx<User?> currentUser = Rx<User?>(null);
   final RxBool isLoading = RxBool(false);
@@ -24,7 +30,7 @@ class AuthViewModel extends GetxController {
   Future<void> login({required String email, required String password}) async {
     try {
       isLoading.value = true;
-      
+
       // Validate credentials
       final credentials = AuthCredentials(
         email: email,
@@ -42,23 +48,73 @@ class AuthViewModel extends GetxController {
         return;
       }
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      final response = await _networkApiServices.postApiWithoutAuth({
+        'email': credentials.email,
+        'password': credentials.password,
+      }, ApiEndpoints.login);
 
-      // Create user
+      print('Response from login: $response');
+
+      if (response is! Map<String, dynamic>) {
+        Get.snackbar('Error', 'Invalid server response');
+        return;
+      }
+
+      final success = response['success'] == true;
+      final message = (response['message'] ?? 'Login failed').toString();
+
+      if (!success) {
+        Get.snackbar('Error', message);
+        return;
+      }
+
+      final data = response['data'];
+      if (data is! Map<String, dynamic>) {
+        Get.snackbar('Error', 'Missing login data');
+        return;
+      }
+
+      final accessToken = (data['accessToken'] ?? '').toString();
+      final refreshToken = (data['refreshToken'] ?? '').toString();
+
+      if (accessToken.isEmpty || refreshToken.isEmpty) {
+        Get.snackbar('Error', 'Missing token in response');
+        return;
+      }
+
+      // Keep token in memory for authorized API calls.
+      NetworkApiServices.accessToken = accessToken;
+      ApiBaseService.accessToken = accessToken;
+
+      final userJson = data['user'];
+      if (userJson is! Map<String, dynamic>) {
+        Get.snackbar('Error', 'Missing user data');
+        return;
+      }
+
       final user = User(
-        id: '1',
-        name: email.split('@')[0],
-        email: email,
+        id: (userJson['id'] ?? '').toString(),
+        name: ((userJson['username'] ?? '') as String).trim().isNotEmpty
+            ? (userJson['username'] as String)
+            : '${(userJson['firstName'] ?? '').toString()} ${(userJson['lastName'] ?? '').toString()}'
+                  .trim(),
+        email: (userJson['email'] ?? email).toString(),
+        avatar: userJson['profileImage']?.toString(),
       );
 
       currentUser.value = user;
       userName.value = user.name;
       userEmail.value = user.email;
 
+      Get.snackbar('Success', message);
+
       // Navigate to home
       Get.offAllNamed(AppRoutes.home);
-    } catch (e) {
+    } catch (e, st) {
+      if (kDebugMode) {
+        print('Login exception: $e');
+        print(st);
+      }
       Get.snackbar('Error', 'Login failed: $e');
     } finally {
       isLoading.value = false;
@@ -68,9 +124,9 @@ class AuthViewModel extends GetxController {
   Future<void> logout() async {
     try {
       isLoading.value = true;
-      
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
+
+      NetworkApiServices.accessToken = '';
+      ApiBaseService.accessToken = '';
 
       currentUser.value = null;
       userName.value = '';
@@ -78,7 +134,11 @@ class AuthViewModel extends GetxController {
       rememberMe.value = false;
 
       Get.offAllNamed(AppRoutes.login);
-    } catch (e) {
+    } catch (e, st) {
+      if (kDebugMode) {
+        print('Logout exception: $e');
+        print(st);
+      }
       Get.snackbar('Error', 'Logout failed: $e');
     } finally {
       isLoading.value = false;

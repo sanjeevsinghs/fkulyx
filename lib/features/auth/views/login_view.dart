@@ -92,21 +92,29 @@ class _LoginViewState extends State<LoginView> {
                   filled: true,
                   fillColor: Colors.white,
                   // border:InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.orange, width: 1),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 2,
                   ),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.green, width: 1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.orange, width: 1),
                   ),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.black, width: 1),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.green, width: 1),
                   ),
-                  disabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.blue, width: 1),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.black, width: 1),
                   ),
-                  focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red, width: 1),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.blue, width: 1),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red, width: 1),
                   ),
                 ),
               ),
@@ -125,20 +133,30 @@ class _LoginViewState extends State<LoginView> {
                     hintText: 'Enter your password',
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 16,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: const BorderSide(color: Color(0xFFD6D6D6)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Color(0xFFFF6A00), width: 1.5),
+                      borderSide: const BorderSide(
+                        color: Color(0xFFFF6A00),
+                        width: 1.5,
+                      ),
                     ),
                     suffixIcon: IconButton(
                       onPressed: viewModel.togglePasswordVisibility,
                       icon: Icon(
-                        viewModel.isPasswordHidden.value ? Icons.visibility_off : Icons.visibility,
+                        viewModel.isPasswordHidden.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
                     ),
                   ),
@@ -172,13 +190,17 @@ class _LoginViewState extends State<LoginView> {
                   child: ElevatedButton(
                     onPressed: viewModel.isLoading.value
                         ? null
-                        : () => viewModel.login(
+                        : () {
+                            viewModel.login(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
-                            ),
+                            );
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFF6A00),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                     child: const Text(
                       'Login',

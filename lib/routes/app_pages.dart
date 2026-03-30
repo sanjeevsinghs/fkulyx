@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:kulyx/bindings/auth_binding.dart';
 import 'package:kulyx/bindings/dashboard_binding.dart';
-import 'package:kulyx/bindings/home_binding.dart';
 import 'package:kulyx/bindings/lms_binding.dart';
 import 'package:kulyx/bindings/marketplace_binding.dart';
 import 'package:kulyx/bindings/meal_planner_binding.dart';

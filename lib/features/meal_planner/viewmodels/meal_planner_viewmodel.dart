@@ -6,32 +6,4 @@ class MealPlannerViewModel extends GetxController {
   final RxBool isLoading = RxBool(false);
   final RxString error = RxString('');
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchMealPlans();
-  }
-
-  Future<void> fetchMealPlans() async {
-    try {
-      isLoading.value = true;
-      error.value = '';
-
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Mock data
-      mealPlans.value = [
-        MealPlan(id: '1', day: 'Monday', items: ['Breakfast', 'Lunch', 'Dinner']),
-        MealPlan(id: '2', day: 'Tuesday', items: ['Lunch', 'Dinner']),
-        MealPlan(id: '3', day: 'Wednesday', items: ['Breakfast', 'Snacks']),
-        MealPlan(id: '4', day: 'Thursday', items: ['Breakfast', 'Lunch', 'Dinner']),
-        MealPlan(id: '5', day: 'Friday', items: ['Lunch', 'Dinner']),
-      ];
-    } catch (e) {
-      error.value = 'Failed to load meal plans: $e';
-    } finally {
-      isLoading.value = false;
-    }
-  }
 }

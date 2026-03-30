@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kulyx/features/meal_planner/models/meal_planner_screen_model.dart';
+import 'package:kulyx/widgets/images.dart';
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({super.key, required this.item, this.onTap});
@@ -9,40 +10,61 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isNetworkImage = item.imagePath.startsWith('http');
+
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
+      color: Colors.grey[50],
+      borderRadius: BorderRadius.circular(7),
+
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(7),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFEAEAEA)),
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(color: Colors.grey, width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Expanded(
+              Padding(
+                padding: const EdgeInsets.all(5),
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                  child: Image.asset(
-                    item.imagePath,
+                  borderRadius: BorderRadius.circular(7),
+                  child: SizedBox(
                     width: double.infinity,
-                    fit: BoxFit.cover,
+                    height: 110,
+                    child: isNetworkImage
+                        ? Image.network(
+                            item.imagePath,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                AssetsImages.vagitable,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
+                        : Image.asset(
+                            AssetsImages.vagitable,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                 child: Text(
                   item.title,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ],

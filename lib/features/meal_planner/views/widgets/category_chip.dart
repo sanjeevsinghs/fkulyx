@@ -22,9 +22,9 @@ class CategoryChip extends GetView<MealPlannerUiController> {
             borderRadius: BorderRadius.circular(20),
             onTap: () => controller.selectFilter(filter.id),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(32),
                 border: Border.all(
                   color: isSelected
                       ? const Color(0xFFFF6A00)
@@ -37,8 +37,8 @@ class CategoryChip extends GetView<MealPlannerUiController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   if (filter.leadingEmoji.isNotEmpty) ...[
-                    Text(filter.leadingEmoji, style: const TextStyle(fontSize: 29),textAlign: TextAlign.center,),
-                    const SizedBox(width: 10),
+                    Text(filter.leadingEmoji, style: const TextStyle(fontSize: 20)),
+                    const SizedBox(width: 5),
                   ],
                   Text(
                     filter.label,

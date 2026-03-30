@@ -109,6 +109,7 @@ class _ProductCard extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
+          ElevatedButton(onPressed: () {}, child: const Text('Explore More')),
         ],
       ),
     );

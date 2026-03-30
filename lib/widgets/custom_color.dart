@@ -49,47 +49,26 @@ const String colorA1A1A1 = "#A1A1A1";
 const String questionSeleted = "#14AE5C";
 const String color97989D = "#97989D";
 
-
-const String color494949  = "#494949";
-const String colorC0C0C0  = "#C0C0C0";
-const String color272932  = "#272932";
-const String color1A1D1F  = "#1A1D1F";
-const String colorFFCB65  = "#FFCB65";
-const String colorFFA964  = "#FFA964";
-const String colorFFA257  = "#FFA257";
-const String color52545B  = "#52545B";
-const String colorF3F3F3  = "#F3F3F3";
-const String colorEFEFEF  = "#EFEFEF";
-const String colorE1E1E2  = "#E1E1E2";
-const String color8A8C90  = "#8A8C90";
-const String colorFCFCFC  = "#FCFCFC";
-const String color6F767E  = "#6F767E";
-const String color111315  = "#111315";
-const String colorFF782A  = "#FF782A";
-const String colorFFC32A  = "#FFC32A";
-const String colorFF982A  = "#FF982A";
+const String color494949 = "#494949";
+const String colorC0C0C0 = "#C0C0C0";
+const String color272932 = "#272932";
+const String color1A1D1F = "#1A1D1F";
+const String colorFFCB65 = "#FFCB65";
+const String colorFFA964 = "#FFA964";
+const String colorFFA257 = "#FFA257";
+const String color52545B = "#52545B";
+const String colorF3F3F3 = "#F3F3F3";
+const String colorEFEFEF = "#EFEFEF";
+const String colorE1E1E2 = "#E1E1E2";
+const String color8A8C90 = "#8A8C90";
+const String colorFCFCFC = "#FCFCFC";
+const String color6F767E = "#6F767E";
+const String color111315 = "#111315";
+const String colorFF782A = "#FF782A";
+const String colorFFC32A = "#FFC32A";
+const String colorFF982A = "#FF982A";
 
 // const String colorFCF9F2  = "#FCF9F2";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const String colorFFB865 = "#FFB865";
 const String colorFC67AE = "#FC67AE";
@@ -103,22 +82,16 @@ const String colorF8F8F8 = "#F8F8F8";
 const String color8F84CE = "#8F84CE";
 const String colorFFD1C2 = "#FFD1C2";
 
-
-
-
-
-
-
 const String darkgreyColor = "#475156";
 const String greyBorderColor = "#8E8E93";
 const String greyLightBorder = "#D1D1D6";
 const String appBlueColor = "#310E56";
 const String darkGreenColor = "#388E3C";
 const String appTextBlack = "#182230";
-const String colorF1F1F1="#F1F1F1";
-const String color5E6366 ="#5E6366";
-const String color525252 ="#525252";
-const String colorEEEEEF ="#EEEEEF";
+const String colorF1F1F1 = "#F1F1F1";
+const String color5E6366 = "#5E6366";
+const String color525252 = "#525252";
+const String colorEEEEEF = "#EEEEEF";
 
 // const String appTextGray="#A4A4A4";
 // const String appTextDarkGray="#667085";
