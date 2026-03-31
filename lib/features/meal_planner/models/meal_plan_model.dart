@@ -1,3 +1,1 @@
-class MealPlan {
-  
-}
+class MealPlan {}

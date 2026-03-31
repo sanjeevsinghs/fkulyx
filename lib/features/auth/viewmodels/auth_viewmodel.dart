@@ -5,7 +5,7 @@ import 'package:kulyx/features/auth/models/user_model.dart';
 import 'package:kulyx/network/api_base_service.dart';
 import 'package:kulyx/network/api_endpoints.dart';
 import 'package:kulyx/network/network_api_services.dart';
-import 'package:kulyx/routes/app_routes.dart';
+import 'package:kulyx/routes/index.dart';
 
 class AuthViewModel extends GetxController {
   final NetworkApiServices _networkApiServices = NetworkApiServices();
@@ -93,7 +93,7 @@ class AuthViewModel extends GetxController {
       }
 
       final user = User(
-        id: (userJson['id'] ?? '').toString(),
+        id: (userJson['_id'] ?? userJson['id'] ?? '').toString(),
         name: ((userJson['username'] ?? '') as String).trim().isNotEmpty
             ? (userJson['username'] as String)
             : '${(userJson['firstName'] ?? '').toString()} ${(userJson['lastName'] ?? '').toString()}'
@@ -121,27 +121,35 @@ class AuthViewModel extends GetxController {
     }
   }
 
-  Future<void> logout() async {
-    try {
-      isLoading.value = true;
+  // Future<void> logout() async {
+  //   try {
+  //     isLoading.value = true;
 
-      NetworkApiServices.accessToken = '';
-      ApiBaseService.accessToken = '';
+  //     NetworkApiServices.accessToken = '';
+  //     // Clear user ID from MealPlannerUiController
+  //     try {
+  //       Get.find<MealPlannerUiController>().currentUserId.value = '';
+  //       Get.find<MealPlannerUiController>().wishlistProductIds.clear();
+  //     } catch (e) {
+  //       if (kDebugMode) print('Error clearing meal planner data: $e');
+  //     }
 
-      currentUser.value = null;
-      userName.value = '';
-      userEmail.value = '';
-      rememberMe.value = false;
+  //     ApiBaseService.accessToken = '';
 
-      Get.offAllNamed(AppRoutes.login);
-    } catch (e, st) {
-      if (kDebugMode) {
-        print('Logout exception: $e');
-        print(st);
-      }
-      Get.snackbar('Error', 'Logout failed: $e');
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  //     currentUser.value = null;
+  //     userName.value = '';
+  //     userEmail.value = '';
+  //     rememberMe.value = false;
+
+  //     Get.offAllNamed(AppRoutes.login);
+  //   } catch (e, st) {
+  //     if (kDebugMode) {
+  //       print('Logout exception: $e');
+  //       print(st);
+  //     }
+  //     Get.snackbar('Error', 'Logout failed: $e');
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 }

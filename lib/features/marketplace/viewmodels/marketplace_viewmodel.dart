@@ -42,7 +42,9 @@ class MarketplaceViewModel extends GetxController {
   List<Product> get filteredProducts {
     if (searchQuery.isEmpty) return products;
     return products
-        .where((p) => p.name.toLowerCase().contains(searchQuery.value.toLowerCase()))
+        .where(
+          (p) => p.name.toLowerCase().contains(searchQuery.value.toLowerCase()),
+        )
         .toList();
   }
 }

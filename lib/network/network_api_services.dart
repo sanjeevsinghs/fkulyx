@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kulyx/network/app_exceptions.dart';
 import 'package:kulyx/network/base_api_services.dart';
-import 'package:kulyx/routes/app_routes.dart';
+import 'package:kulyx/routes/index.dart';
 
 class NetworkApiServices extends BaseApiServices {
   static const Duration requestTimeout = Duration(seconds: 30);

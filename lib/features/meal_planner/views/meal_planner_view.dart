@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kulyx/features/meal_planner/viewmodels/meal_planner_ui_controller.dart';
-import 'package:kulyx/features/meal_planner/views/widgets/category_card.dart';
-import 'package:kulyx/features/meal_planner/views/widgets/category_chip.dart';
-import 'package:kulyx/features/meal_planner/views/widgets/trending_card.dart';
+import 'package:kulyx/features/meal_planner/viewmodels/index.dart';
+import 'package:kulyx/features/meal_planner/views/widgets/index.dart';
+import 'package:kulyx/routes/index.dart';
 
 class MealPlannerView extends StatelessWidget {
   const MealPlannerView({super.key});
@@ -37,7 +36,11 @@ class MealPlannerView extends StatelessWidget {
                       height: 35,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 228, 228, 228),
+                          width: 1,
+                        ),
                       ),
                       child: const Icon(
                         Icons.menu,
@@ -61,7 +64,16 @@ class MealPlannerView extends StatelessWidget {
                       ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {},
+                        onPressed: () {
+                          uiController.syncUserIdFromToken();
+                          final userId = uiController.currentUserId.value;
+                          Get.snackbar(
+                            'User ID',
+                            userId.isEmpty ? 'User not found' : userId,
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          Get.toNamed(AppRoutes.cart);
+                        },
                         icon: const Icon(
                           Icons.shopping_cart_outlined,
                           color: Colors.white,

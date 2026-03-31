@@ -8,6 +8,8 @@ import 'package:kulyx/bindings/tab_bar_binding.dart';
 import 'package:kulyx/routes/app_routes.dart';
 import 'package:kulyx/routes/screens/tab_bar_shell.dart';
 import 'package:kulyx/features/auth/views/login_view.dart';
+import 'package:kulyx/features/meal_planner/views/cart_view.dart';
+import 'package:kulyx/features/meal_planner/viewmodels/cart_controller.dart';
 
 class AppPages {
   static final List<GetPage<dynamic>> pages = [
@@ -28,6 +30,15 @@ class AppPages {
         MealPlannerBinding(),
         DashboardBinding(),
       ],
+    ),
+    GetPage(
+      name: AppRoutes.cart,
+      page: () => const CartView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<CartController>()) {
+          Get.lazyPut<CartController>(() => CartController());
+        }
+      }),
     ),
   ];
 }

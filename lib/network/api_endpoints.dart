@@ -7,12 +7,15 @@ class ApiEndpoints {
   static const String trendingProducts = '$base/products/trending';
   static const String categories = '$base/categories';
 
-  //   static const String base =
-  // 'http://192.168.0.182:3001/api/v1';
-  // static const String base = 'http://192.168.1.24:3001/api/v1';
-  // static const String base = 'http://192.168.0.186:3001/api/v1';
-  // static const String base = 'http://192.168.0.187:3001/api/v1';
-  // static const String base = 'http://192.168.0.182:3001/api/v1';
+  // Wishlist endpoints
+  static const String wishlistAdd = '$base/wishlist/add';
+  static const String wishlistRemove = '$base/wishlist/remove';
+  static const String wishlistGet = '$base/wishlist';
 
-  // http://192.168.0.186:3001/api/v1
+  // Cart endpoints
+  static const String cart = '$base/cart';
+  static const String cartAdd = '$base/cart/add';
+  static const String cartRemove = '$base/cart/remove';
+  static const String cartUpdate = '$base/cart/update';
+  static const String cartClear = '$base/cart/clear';
 }

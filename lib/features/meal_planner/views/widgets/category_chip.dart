@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kulyx/features/meal_planner/models/meal_planner_screen_model.dart';
-import 'package:kulyx/features/meal_planner/viewmodels/meal_planner_ui_controller.dart';
+import 'package:kulyx/features/meal_planner/models/index.dart';
+import 'package:kulyx/features/meal_planner/viewmodels/index.dart';
 
 class CategoryChip extends GetView<MealPlannerUiController> {
   const CategoryChip({super.key, required this.filter});
@@ -37,14 +37,19 @@ class CategoryChip extends GetView<MealPlannerUiController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   if (filter.leadingEmoji.isNotEmpty) ...[
-                    Text(filter.leadingEmoji, style: const TextStyle(fontSize: 20)),
+                    Text(
+                      filter.leadingEmoji,
+                      style: const TextStyle(fontSize: 20),
+                    ),
                     const SizedBox(width: 5),
                   ],
                   Text(
                     filter.label,
                     style: TextStyle(
                       fontSize: 14,
-                      color: isSelected ? Colors.white : const Color(0xFF666666),
+                      color: isSelected
+                          ? Colors.white
+                          : const Color(0xFF666666),
                       fontWeight: FontWeight.w600,
                     ),
                   ),

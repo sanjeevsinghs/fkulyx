@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kulyx/features/meal_planner/models/meal_planner_screen_model.dart';
+import 'package:kulyx/features/meal_planner/models/index.dart';
 import 'package:kulyx/widgets/images.dart';
 
 class CategoryCard extends StatelessWidget {

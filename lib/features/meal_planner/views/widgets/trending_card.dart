@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kulyx/features/meal_planner/models/meal_planner_screen_model.dart';
+import 'package:get/get.dart';
+import 'package:kulyx/features/meal_planner/models/index.dart';
+import 'package:kulyx/features/meal_planner/viewmodels/index.dart';
 import 'package:kulyx/widgets/images.dart';
 
 class TrendingCard extends StatelessWidget {
@@ -8,9 +10,35 @@ class TrendingCard extends StatelessWidget {
   final TrendingProductModel item;
   final VoidCallback? onTap;
 
+  void _showBagMeta(MealPlannerUiController controller) {
+    controller.syncUserIdFromToken();
+    final userId = controller.currentUserId.value.isEmpty
+        ? 'N/A'
+        : controller.currentUserId.value;
+    final productId = item.id.isEmpty ? 'N/A' : item.id;
+    final variantId = item.variantId.isEmpty ? 'N/A' : item.variantId;
+
+    Get.snackbar(
+      'Shopping Bag Data',
+      'userId: $userId\nproductId: $productId\nvariantId: $variantId',
+      snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 4),
+    );
+  }
+
+  Future<void> _handleBagPress(MealPlannerUiController controller) async {
+    _showBagMeta(controller);
+    await controller.addToCart(
+      productId: item.id,
+      variantId: item.variantId,
+      quantity: 1,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final String? badge = item.badgeLabel;
+    final controller = Get.find<MealPlannerUiController>();
 
     return Material(
       color: Colors.grey,
@@ -90,20 +118,39 @@ class TrendingCard extends StatelessWidget {
                   Positioned(
                     top: 12,
                     right: 12,
-                    child: Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.grey[300]!, width: 1),
-                        color: const Color.fromARGB(255, 162, 162, 162),
-                      ),
-                      child: const Icon(
-                        Icons.favorite_border,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
+                    child: Obx(() {
+                      final isWishlisted = controller.isWishlisted(item.id);
+                      final isToggling = controller.isTogglingWishlist(item.id);
+
+                      return GestureDetector(
+                        onTap: isToggling
+                            ? null
+                            : () {
+                                controller.toggleWishlist(item.id);
+                              },
+                        child: Container(
+                          width: 25,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                            color: const Color.fromARGB(1, 142, 142, 147),
+                          ),
+                          child: Icon(
+                            isWishlisted
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: isWishlisted
+                                ? const Color(0xFFFF6A00)
+                                : Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                      );
+                    }),
                   ),
                 ],
               ),
@@ -176,6 +223,8 @@ class TrendingCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 7),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'DA${item.price.toStringAsFixed(item.price % 1 == 0 ? 0 : 2)}',
@@ -205,10 +254,14 @@ class TrendingCard extends StatelessWidget {
                             color: const Color(0xFFFF6A00),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(
-                            Icons.shopping_bag_outlined,
-                            color: Colors.white,
-                            size: 16,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: const Icon(
+                              Icons.shopping_bag_outlined,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => _handleBagPress(controller),
                           ),
                         ),
                       ],

@@ -17,9 +17,9 @@ class TabBarShell extends StatelessWidget {
 
     final List<Widget> tabPages = [
       const HomeView(),
-      const MarketplaceView(),
-      const LmsView(),
       const MealPlannerView(),
+      const LmsView(),
+      const MarketplaceView(),
       const DashboardView(),
     ];
 
@@ -36,9 +36,9 @@ class TabBarShell extends StatelessWidget {
           child: SafeArea(
             // top: false,
             child: MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaler: TextScaler.noScaling,
-              ),
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.noScaling),
               child: BottomNavigationBar(
                 backgroundColor: Colors.black,
                 type: BottomNavigationBarType.fixed,

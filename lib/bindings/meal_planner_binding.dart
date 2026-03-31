@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
-import 'package:kulyx/features/meal_planner/viewmodels/meal_planner_viewmodel.dart';
-import 'package:kulyx/features/meal_planner/viewmodels/meal_planner_ui_controller.dart';
+import 'package:kulyx/features/meal_planner/viewmodels/index.dart';
 
 class MealPlannerBinding extends Bindings {
   @override
