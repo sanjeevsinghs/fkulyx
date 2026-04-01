@@ -29,11 +29,11 @@ class CategoryCard extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(5),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(7),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 110,
+                child: Container(
+                  height: 100,
+                  width: double.infinity,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(7),
                     child: isNetworkImage
                         ? Image.network(
                             item.imagePath,
@@ -59,7 +59,7 @@ class CategoryCard extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                 child: Text(
                   item.title,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,

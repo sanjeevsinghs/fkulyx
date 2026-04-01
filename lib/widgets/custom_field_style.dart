@@ -1,47 +1,47 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
-class CustomFieldStyle {
-  static Color hexColor(String hex) {
-    final normalized = hex.replaceAll('#', '').trim();
+// class CustomFieldStyle {
+//   static Color hexColor(String hex) {
+//     final normalized = hex.replaceAll('#', '').trim();
 
-    if (normalized.length == 6) {
-      return Color(int.parse('0xFF$normalized'));
-    }
+//     if (normalized.length == 6) {
+//       return Color(int.parse('0xFF$normalized'));
+//     }
 
-    if (normalized.length == 8) {
-      return Color(int.parse('0x$normalized'));
-    }
+//     if (normalized.length == 8) {
+//       return Color(int.parse('0x$normalized'));
+//     }
 
-    return Colors.black;
-  }
+//     return Colors.black;
+//   }
 
-  static TextStyle robotoStyle({
-    required double textSize,
-    required Color textColor,
-    FontWeight? fontWeight,
-    double? height,
-  }) {
-    return TextStyle(
-      fontFamily: 'roboto',
-      fontSize: textSize,
-      color: textColor,
-      fontWeight: fontWeight ?? FontWeight.w400,
-      height: height,
-    );
-  }
-}
+//   static TextStyle robotoStyle({
+//     required double textSize,
+//     required Color textColor,
+//     FontWeight? fontWeight,
+//     double? height,
+//   }) {
+//     return TextStyle(
+//       fontFamily: 'roboto',
+//       fontSize: textSize,
+//       color: textColor,
+//       fontWeight: fontWeight ?? FontWeight.w400,
+//       height: height,
+//     );
+//   }
+// }
 
-Color HexColor(String hex) => CustomFieldStyle.hexColor(hex);
+// Color HexColor(String hex) => CustomFieldStyle.hexColor(hex);
 
-TextStyle robotoStyle({
-  required double textSize,
-  required Color textColor,
-  FontWeight? fontWeight,
-  double? height,
-}) =>
-    CustomFieldStyle.robotoStyle(
-      textSize: textSize,
-      textColor: textColor,
-      fontWeight: fontWeight,
-      height: height,
-    );
+// TextStyle robotoStyle({
+//   required double textSize,
+//   required Color textColor,
+//   FontWeight? fontWeight,
+//   double? height,
+// }) =>
+//     CustomFieldStyle.robotoStyle(
+//       textSize: textSize,
+//       textColor: textColor,
+//       fontWeight: fontWeight,
+//       height: height,
+//     );

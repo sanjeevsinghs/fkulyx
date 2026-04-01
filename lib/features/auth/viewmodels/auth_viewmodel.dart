@@ -53,8 +53,6 @@ class AuthViewModel extends GetxController {
         'password': credentials.password,
       }, ApiEndpoints.login);
 
-      print('Response from login: $response');
-
       if (response is! Map<String, dynamic>) {
         Get.snackbar('Error', 'Invalid server response');
         return;

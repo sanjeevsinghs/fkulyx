@@ -2,43 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/features/meal_planner/models/index.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/index.dart';
+import 'package:kulyx/routes/app_routes.dart';
 import 'package:kulyx/widgets/images.dart';
 
-class TrendingCard extends StatelessWidget {
+class TrendingCard extends GetView<MealPlannerUiController> {
   const TrendingCard({super.key, required this.item, this.onTap});
 
   final TrendingProductModel item;
   final VoidCallback? onTap;
 
-  void _showBagMeta(MealPlannerUiController controller) {
-    controller.syncUserIdFromToken();
-    final userId = controller.currentUserId.value.isEmpty
-        ? 'N/A'
-        : controller.currentUserId.value;
-    final productId = item.id.isEmpty ? 'N/A' : item.id;
-    final variantId = item.variantId.isEmpty ? 'N/A' : item.variantId;
-
-    Get.snackbar(
-      'Shopping Bag Data',
-      'userId: $userId\nproductId: $productId\nvariantId: $variantId',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 4),
-    );
-  }
-
-  Future<void> _handleBagPress(MealPlannerUiController controller) async {
-    _showBagMeta(controller);
-    await controller.addToCart(
-      productId: item.id,
-      variantId: item.variantId,
-      quantity: 1,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final String? badge = item.badgeLabel;
-    final controller = Get.find<MealPlannerUiController>();
 
     return Material(
       color: Colors.grey,
@@ -57,30 +32,43 @@ class TrendingCard extends StatelessWidget {
             children: <Widget>[
               Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: AspectRatio(
-                        aspectRatio: 1.15,
-                        child: item.imageUrl.isNotEmpty
-                            ? Image.network(
-                                item.imageUrl,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    AssetsImages.glassJar,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              )
-                            : Image.asset(
-                                AssetsImages.glassJar,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.snackbar('Trending Product ID', item.id);
+                      Get.toNamed(
+                        AppRoutes.productDetails,
+                        arguments: <String, dynamic>{
+                          'productId': item.id,
+                          'productName': item.name,
+                          'imageUrl': item.imageUrl,
+                        },
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: AspectRatio(
+                          aspectRatio: 1.15,
+                          child: item.imageUrl.isNotEmpty
+                              ? Image.network(
+                                  item.imageUrl,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      AssetsImages.glassJar,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                )
+                              : Image.asset(
+                                  AssetsImages.glassJar,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                       ),
                     ),
                   ),
@@ -205,12 +193,29 @@ class TrendingCard extends StatelessWidget {
                     const SizedBox(height: 5),
                     Row(
                       children: [
-                        const Icon(
-                          Icons.star,
-                          size: 13,
-                          color: Color(0xFFFFBF00),
+                        Row(
+                          children: List.generate(5, (index) {
+                            final isFilled = index < item.averageRating.floor();
+                            final isHalf = index == item.averageRating.floor() &&
+                                item.averageRating % 1 >= 0.5;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 1),
+                              child: Icon(
+                                isFilled
+                                    ? Icons.star
+                                    : isHalf
+                                        ? Icons.star_half
+                                        : Icons.star_outline,
+                                size: 13,
+                                color: isFilled || isHalf
+                                    ? const Color(0xFFFFBF00)
+                                    : const Color(0xFFFFBF00),
+                              ),
+                            );
+                          }),
                         ),
-                        const SizedBox(width: 2),
+                        const SizedBox(width: 4),
                         Text(
                           '${item.averageRating.toStringAsFixed(1)} (${item.reviewCount})',
                           style: const TextStyle(
@@ -247,23 +252,42 @@ class TrendingCard extends StatelessWidget {
                             ),
                           ),
                         const Spacer(),
-                        Container(
-                          width: 27,
-                          height: 27,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFF6A00),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: const Icon(
-                              Icons.shopping_bag_outlined,
-                              size: 16,
-                              color: Colors.white,
+                        Obx(() {
+                          final isAdding = controller.isAddingToCart(item.id);
+                          return Container(
+                            width: 27,
+                            height: 27,
+                            decoration: BoxDecoration(
+                              color: isAdding
+                                  ? const Color(0xFFFFA15D)
+                                  : const Color(0xFFFF6A00),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            onPressed: () => _handleBagPress(controller),
-                          ),
-                        ),
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: isAdding
+                                  ? const SizedBox(
+                                      width: 12,
+                                      height: 12,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1.7,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.shopping_bag_outlined,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                              onPressed: isAdding
+                                  ? null
+                                  : () => controller.onTrendingBagPressed(item),
+                            ),
+                          );
+                        }),
                       ],
                     ),
                   ],

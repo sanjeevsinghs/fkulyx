@@ -1,5 +1,6 @@
 class CartItem {
   CartItem({
+    this.itemId = '',
     required this.productId,
     required this.productName,
     required this.price,
@@ -8,6 +9,7 @@ class CartItem {
     required this.addedAt,
   });
 
+  final String itemId;
   final String productId;
   final String productName;
   final double price;
@@ -20,6 +22,7 @@ class CartItem {
 
   /// Create a copy with optional updates
   CartItem copyWith({
+    String? itemId,
     String? productId,
     String? productName,
     double? price,
@@ -28,6 +31,7 @@ class CartItem {
     DateTime? addedAt,
   }) {
     return CartItem(
+      itemId: itemId ?? this.itemId,
       productId: productId ?? this.productId,
       productName: productName ?? this.productName,
       price: price ?? this.price,
@@ -40,6 +44,7 @@ class CartItem {
   /// Convert to JSON
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
+      'itemId': itemId,
       'productId': productId,
       'productName': productName,
       'price': price,
@@ -52,6 +57,7 @@ class CartItem {
   /// Create from JSON
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
+      itemId: (json['itemId'] ?? json['_id'] ?? '') as String,
       productId: (json['productId'] ?? '') as String,
       productName: (json['productName'] ?? '') as String,
       price: ((json['price'] ?? 0) as num).toDouble(),
@@ -66,6 +72,7 @@ class CartItem {
   /// Empty cart item for fallback
   factory CartItem.empty() {
     return CartItem(
+      itemId: '',
       productId: '',
       productName: '',
       price: 0.0,

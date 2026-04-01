@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/features/lms/viewmodels/lms_viewmodel.dart';
-import 'package:kulyx/widgets/custom_text_field.dart';
 
 class LmsView extends StatelessWidget {
   const LmsView({super.key});
@@ -30,24 +29,21 @@ class LmsView extends StatelessWidget {
               () => viewModel.isLoading.value
                   ? const Center(child: CircularProgressIndicator())
                   : viewModel.error.value.isNotEmpty
-                      ? Center(child: Text(viewModel.error.value))
-                      : Expanded(
-                          child: ListView.builder(
-                            itemCount: viewModel.lessons.length,
-                            itemBuilder: (context, index) {
-                              final lesson = viewModel.lessons[index];
-                              return _LessonTile(
-                                title: lesson.title,
-                                subtitle: lesson.subtitle,
-                                progress: lesson.progress,
-                              );
-                            },
-                          ),
-                          
-                        ),
-                        
+                  ? Center(child: Text(viewModel.error.value))
+                  : Expanded(
+                      child: ListView.builder(
+                        itemCount: viewModel.lessons.length,
+                        itemBuilder: (context, index) {
+                          final lesson = viewModel.lessons[index];
+                          return _LessonTile(
+                            title: lesson.title,
+                            subtitle: lesson.subtitle,
+                            progress: lesson.progress,
+                          );
+                        },
+                      ),
+                    ),
             ),
-          
           ],
         ),
       ),
@@ -81,10 +77,16 @@ class _LessonTile extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              const Icon(Icons.play_circle_fill_rounded, color: Color(0xFFFF6A00)),
+              const Icon(
+                Icons.play_circle_fill_rounded,
+                color: Color(0xFFFF6A00),
+              ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+                child: Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
               ),
             ],
           ),
@@ -100,14 +102,14 @@ class _LessonTile extends StatelessWidget {
               color: const Color(0xFFFF6A00),
             ),
           ),
-            CustomTextFormField(
-              controller: TextEditingController(),
-              hintText: 'Search for anything',
-              prefixIcon: const Icon(Icons.search, color: Color(0xFF999999), size: 20),
-              borderRadius: 8,
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-            ),
+          // CustomTextFormField(
+          //   controller: TextEditingController(),
+          //   hintText: 'Search for anything',
+          //   prefixIcon: const Icon(Icons.search, color: Color(0xFF999999), size: 20),
+          //   borderRadius: 8,
+          //   fillColor: Colors.white,
+          //   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          // ),
         ],
       ),
     );
