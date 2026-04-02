@@ -3,6 +3,14 @@ part of 'meal_planner_ui_controller.dart';
 extension MealPlannerUiCartPart on MealPlannerUiController {
   void syncUserIdFromToken() => _syncUserIdFromToken();
 
+  Future<void> loadCartCount() async {
+    try {
+      await fetchCartCount();
+    } catch (_) {
+      // Keep the UI usable if the cart count cannot be refreshed.
+    }
+  }
+
   bool isAddingToCart(String productId) => addingToCartIds.contains(productId);
 
   Future<void> onTrendingBagPressed(TrendingProductModel item) async {
@@ -65,7 +73,7 @@ extension MealPlannerUiCartPart on MealPlannerUiController {
         arguments: <String, dynamic>{'apiUniqueItems': uniqueItems},
       );
     } catch (e) {
-      Get.snackbar('Error', e.toString().replaceFirst('Exception: ', ''));
+      AppSnackbar.show(e.toString().replaceFirst('Exception: ', ''));
     }
   }
 
@@ -77,12 +85,12 @@ extension MealPlannerUiCartPart on MealPlannerUiController {
     _syncUserIdFromToken();
 
     if (currentUserId.value.isEmpty) {
-      Get.snackbar('Error', 'User not found. Please login again.');
+      AppSnackbar.show('User not found. Please login again.');
       return;
     }
 
     if (productId.isEmpty || variantId.isEmpty) {
-      Get.snackbar('Error', 'Product or variant is missing.');
+      AppSnackbar.show('Product or variant is missing.');
       return;
     }
 
@@ -91,6 +99,7 @@ extension MealPlannerUiCartPart on MealPlannerUiController {
     }
 
     addingToCartIds.add(productId);
+    isCartActionLoading.value = true;
 
     try {
       final response = await _networkApiServices.postApi(<String, dynamic>{
@@ -104,18 +113,20 @@ extension MealPlannerUiCartPart on MealPlannerUiController {
       if (response is Map<String, dynamic> && response['success'] == true) {
         final message = (response['message'] ?? 'Product added to cart')
             .toString();
-        Get.snackbar('Success', message);
+        AppSnackbar.show(message);
+        await loadCartCount();
         return;
       }
 
       final message = response is Map<String, dynamic>
           ? (response['message'] ?? 'Failed to add product to cart').toString()
           : 'Failed to add product to cart';
-      Get.snackbar('Error', message);
+      AppSnackbar.show(message);
     } catch (e) {
-      Get.snackbar('Error', e.toString().replaceFirst('Exception: ', ''));
+      AppSnackbar.show(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       addingToCartIds.remove(productId);
+      isCartActionLoading.value = false;
     }
   }
 

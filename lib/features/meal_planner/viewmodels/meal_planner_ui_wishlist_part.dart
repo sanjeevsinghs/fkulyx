@@ -4,7 +4,7 @@ extension MealPlannerUiWishlistPart on MealPlannerUiController {
   Future<void> toggleWishlist(String productId) async {
     _syncUserIdFromToken();
     if (currentUserId.value.isEmpty) {
-      Get.snackbar('Error', 'User not found. Please login again.');
+      AppSnackbar.show('User not found. Please login again.');
       return;
     }
 
@@ -32,10 +32,10 @@ extension MealPlannerUiWishlistPart on MealPlannerUiController {
         );
       }
 
-      Get.snackbar('Success', message);
+      AppSnackbar.show(message);
     } catch (e) {
       _setWishlistState(productId, currentStatus);
-      Get.snackbar('Error', e.toString().replaceFirst('Exception: ', ''));
+      AppSnackbar.show(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       togglingWishlistIds.remove(productId);
     }

@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:kulyx/features/meal_planner/models/index.dart';
 import 'package:kulyx/network/api_base_service.dart';
 import 'package:kulyx/network/api_endpoints.dart';
 import 'package:kulyx/network/network_api_services.dart';
 import 'package:kulyx/routes/index.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/cart_controller.dart';
+import 'package:kulyx/widgets/app_snackbar.dart';
 
 part 'meal_planner_ui_data_part.dart';
 part 'meal_planner_ui_wishlist_part.dart';
@@ -26,6 +26,7 @@ class MealPlannerUiController extends GetxController {
   final cartUniqueItems = 0.obs;
   final cartTotalQuantity = 0.obs;
   final isCheckingCartCount = false.obs;
+  final isCartActionLoading = false.obs;
 
   // ========== Wishlist State ==========
   final wishlistStatus =
@@ -74,13 +75,6 @@ class MealPlannerUiController extends GetxController {
   }
 
   void _showError(String message) {
-    Get.snackbar(
-      '❌ Error',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: const Color.fromARGB(255, 255, 100, 100),
-      colorText: const Color(0xFFFFFFFF),
-      duration: const Duration(seconds: 3),
-    );
+    AppSnackbar.show(message);
   }
 }

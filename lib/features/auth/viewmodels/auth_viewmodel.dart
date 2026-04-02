@@ -6,6 +6,7 @@ import 'package:kulyx/network/api_base_service.dart';
 import 'package:kulyx/network/api_endpoints.dart';
 import 'package:kulyx/network/network_api_services.dart';
 import 'package:kulyx/routes/index.dart';
+import 'package:kulyx/widgets/app_snackbar.dart';
 
 class AuthViewModel extends GetxController {
   final NetworkApiServices _networkApiServices = NetworkApiServices();
@@ -39,12 +40,12 @@ class AuthViewModel extends GetxController {
       );
 
       if (!credentials.isValid()) {
-        Get.snackbar('Error', 'Please fill all fields');
+        AppSnackbar.show('Please fill all fields');
         return;
       }
 
       if (!credentials.isEmailValid()) {
-        Get.snackbar('Error', 'Invalid email format');
+        AppSnackbar.show('Invalid email format');
         return;
       }
 
@@ -54,7 +55,7 @@ class AuthViewModel extends GetxController {
       }, ApiEndpoints.login);
 
       if (response is! Map<String, dynamic>) {
-        Get.snackbar('Error', 'Invalid server response');
+        AppSnackbar.show('Invalid server response');
         return;
       }
 
@@ -62,13 +63,13 @@ class AuthViewModel extends GetxController {
       final message = (response['message'] ?? 'Login failed').toString();
 
       if (!success) {
-        Get.snackbar('Error', message);
+        AppSnackbar.show(message);
         return;
       }
 
       final data = response['data'];
       if (data is! Map<String, dynamic>) {
-        Get.snackbar('Error', 'Missing login data');
+        AppSnackbar.show('Missing login data');
         return;
       }
 
@@ -76,7 +77,7 @@ class AuthViewModel extends GetxController {
       final refreshToken = (data['refreshToken'] ?? '').toString();
 
       if (accessToken.isEmpty || refreshToken.isEmpty) {
-        Get.snackbar('Error', 'Missing token in response');
+        AppSnackbar.show('Missing token in response');
         return;
       }
 
@@ -86,7 +87,7 @@ class AuthViewModel extends GetxController {
 
       final userJson = data['user'];
       if (userJson is! Map<String, dynamic>) {
-        Get.snackbar('Error', 'Missing user data');
+        AppSnackbar.show('Missing user data');
         return;
       }
 
@@ -104,7 +105,7 @@ class AuthViewModel extends GetxController {
       userName.value = user.name;
       userEmail.value = user.email;
 
-      Get.snackbar('Success', message);
+      AppSnackbar.show(message);
 
       // Navigate to home
       Get.offAllNamed(AppRoutes.home);
@@ -113,7 +114,7 @@ class AuthViewModel extends GetxController {
         print('Login exception: $e');
         print(st);
       }
-      Get.snackbar('Error', 'Login failed: $e');
+      AppSnackbar.show('Login failed: $e');
     } finally {
       isLoading.value = false;
     }

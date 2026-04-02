@@ -29,7 +29,7 @@ class CategoryCard extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(5),
-                child: Container(
+                child: SizedBox(
                   height: 100,
                   width: double.infinity,
                   child: ClipRRect(

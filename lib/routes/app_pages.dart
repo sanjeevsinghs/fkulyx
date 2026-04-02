@@ -12,6 +12,7 @@ import 'package:kulyx/features/auth/views/login_view.dart';
 import 'package:kulyx/features/meal_planner/views/cart_view.dart';
 import 'package:kulyx/features/meal_planner/views/product_details_view.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/cart_controller.dart';
+import 'package:kulyx/features/meal_planner/viewmodels/product_details_controller.dart';
 
 class AppPages {
   static final List<GetPage<dynamic>> pages = [
@@ -46,6 +47,13 @@ class AppPages {
     GetPage(
       name: AppRoutes.productDetails,
       page: () => const ProductDetailsView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<ProductDetailsController>()) {
+          Get.lazyPut<ProductDetailsController>(
+            () => ProductDetailsController(),
+          );
+        }
+      }),
     ),
   ];
 }

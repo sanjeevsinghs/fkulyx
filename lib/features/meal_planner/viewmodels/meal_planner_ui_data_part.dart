@@ -14,6 +14,7 @@ extension MealPlannerUiDataPart on MealPlannerUiController {
       }
 
       await _fetchTrendingProducts();
+      await loadCartCount();
     } catch (e) {
       trendingError.value = 'Failed to load screen data';
       _showError('Failed to load data');
@@ -138,11 +139,13 @@ extension MealPlannerUiDataPart on MealPlannerUiController {
         },
       ],
       'categories': categories
-          .map((e) => <String, dynamic>{
-                'id': e.id,
-                'title': e.title,
-                'imagePath': e.imagePath,
-              })
+          .map(
+            (e) => <String, dynamic>{
+              'id': e.id,
+              'title': e.title,
+              'imagePath': e.imagePath,
+            },
+          )
           .toList(),
     };
   }

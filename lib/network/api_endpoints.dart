@@ -17,6 +17,7 @@ class ApiEndpoints {
   static const String cartAdd = '$base/cart/add';
   static const String cartCount = '$base/cart/count';
   static const String cartUser = '$base/cart/user';
+  static const String cartDelete = '$base/cart';
   static const String cartItemRemove = '$base/cart/item';
   // static const String cartUpdate = '$base/cart/update';
   // static const String cartClear = '$base/cart/clear';

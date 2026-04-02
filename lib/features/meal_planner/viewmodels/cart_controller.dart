@@ -2,12 +2,15 @@ import 'package:get/get.dart';
 import 'package:kulyx/features/meal_planner/models/index.dart';
 import 'package:kulyx/network/api_endpoints.dart';
 import 'package:kulyx/network/network_api_services.dart';
+import 'package:kulyx/widgets/app_snackbar.dart';
 
 class CartController extends GetxController {
   // ========== Cart State ==========
   final cartItems = <CartItem>[].obs;
   final isLoading = false.obs;
+  final isClearingCart = false.obs;
   final cartError = ''.obs;
+  final cartId = ''.obs;
 
   // ========== Computed Getters ==========
   int get itemCount => cartItems.length;
@@ -55,9 +58,9 @@ class CartController extends GetxController {
         );
         cartItems.add(newItem);
       }
-      Get.snackbar('Success', '$productName added to cart');
+      AppSnackbar.show('$productName added to cart');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to add to cart');
+      AppSnackbar.show('Failed to add to cart');
     }
   }
 
@@ -71,7 +74,7 @@ class CartController extends GetxController {
       final idToUse = itemId.isNotEmpty ? itemId : removedItem.itemId;
 
       if (idToUse.isEmpty) {
-        Get.snackbar('Error', 'Cannot remove item: missing item ID');
+        AppSnackbar.show('Cannot remove item: missing item ID');
         return;
       }
 
@@ -81,16 +84,16 @@ class CartController extends GetxController {
 
       if (response is Map<String, dynamic> && response['success'] == true) {
         cartItems.removeWhere((item) => item.productId == productId);
-        Get.snackbar('Removed', '${removedItem.productName} removed from cart');
+        AppSnackbar.show('${removedItem.productName} removed from cart');
         return;
       }
 
       final message = response is Map<String, dynamic>
           ? (response['message'] ?? 'Failed to remove item from cart')
           : 'Failed to remove item from cart';
-      Get.snackbar('Error', message);
+      AppSnackbar.show(message);
     } catch (e) {
-      Get.snackbar('Error', e.toString().replaceFirst('Exception: ', ''));
+      AppSnackbar.show(e.toString().replaceFirst('Exception: ', ''));
     }
   }
 
@@ -107,17 +110,52 @@ class CartController extends GetxController {
         cartItems[index] = cartItems[index].copyWith(quantity: newQuantity);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update quantity');
+      AppSnackbar.show('Failed to update quantity');
     }
   }
 
   /// Clear entire cart
-  void clearCart() {
+  Future<void> clearCart() async {
+    try {
+      if (cartItems.isEmpty) {
+        AppSnackbar.show('Cart is already empty');
+        return;
+      }
+
+      if (cartId.value.isEmpty) {
+        AppSnackbar.show('Cannot clear cart: missing cart ID');
+        return;
+      }
+
+      isClearingCart.value = true;
+      final response = await NetworkApiServices().deleteApi(
+        '${ApiEndpoints.cartDelete}/${cartId.value}',
+      );
+
+      if (response is Map<String, dynamic> && response['success'] == true) {
+        cartItems.clear();
+        cartId.value = '';
+        AppSnackbar.show((response['message'] ?? 'Cart cleared').toString());
+        return;
+      }
+
+      final message = response is Map<String, dynamic>
+          ? (response['message'] ?? 'Failed to clear cart').toString()
+          : 'Failed to clear cart';
+      AppSnackbar.show(message);
+    } catch (e) {
+      AppSnackbar.show(e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      isClearingCart.value = false;
+    }
+  }
+
+  void clearCartLocal() {
     try {
       cartItems.clear();
-      Get.snackbar('Success', 'Cart cleared');
+      AppSnackbar.show('Cart cleared');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to clear cart');
+      AppSnackbar.show('Failed to clear cart');
     }
   }
 
@@ -125,18 +163,17 @@ class CartController extends GetxController {
   Future<void> checkout() async {
     try {
       if (cartItems.isEmpty) {
-        Get.snackbar('Error', 'Cart is empty');
+        AppSnackbar.show('Cart is empty');
         return;
       }
 
       isLoading.value = true;
-      // TODO: Add API call to checkout endpoint
       // For now, just clear cart on success
       await Future.delayed(const Duration(seconds: 1));
-      Get.snackbar('Success', 'Order placed successfully');
-      clearCart();
+      AppSnackbar.show('Order placed successfully');
+      clearCartLocal();
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      AppSnackbar.show(e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -147,6 +184,10 @@ class CartController extends GetxController {
       final data = response['data'];
       final cart = data is Map<String, dynamic> ? data['cart'] : null;
       final itemsRaw = cart is Map<String, dynamic> ? cart['items'] : null;
+
+      cartId.value = _asString(
+        cart is Map<String, dynamic> ? cart['_id'] : null,
+      );
 
       if (itemsRaw is! List) {
         cartItems.clear();

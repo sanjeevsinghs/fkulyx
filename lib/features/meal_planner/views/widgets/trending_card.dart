@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:kulyx/features/meal_planner/models/index.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/index.dart';
 import 'package:kulyx/routes/app_routes.dart';
+import 'package:kulyx/widgets/app_snackbar.dart';
 import 'package:kulyx/widgets/images.dart';
 
 class TrendingCard extends GetView<MealPlannerUiController> {
@@ -34,7 +35,7 @@ class TrendingCard extends GetView<MealPlannerUiController> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Get.snackbar('Trending Product ID', item.id);
+                      AppSnackbar.show('Opening product ${item.id}');
                       Get.toNamed(
                         AppRoutes.productDetails,
                         arguments: <String, dynamic>{
@@ -168,7 +169,9 @@ class TrendingCard extends GetView<MealPlannerUiController> {
                           ),
                         ),
                         Text(
-                          '${item.unitSoldCount} units sold',
+                          item.unitSoldCount > 0
+                              ? '${item.unitSoldCount} units sold'
+                              : '',
                           style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFFF15B2A),
@@ -196,7 +199,8 @@ class TrendingCard extends GetView<MealPlannerUiController> {
                         Row(
                           children: List.generate(5, (index) {
                             final isFilled = index < item.averageRating.floor();
-                            final isHalf = index == item.averageRating.floor() &&
+                            final isHalf =
+                                index == item.averageRating.floor() &&
                                 item.averageRating % 1 >= 0.5;
 
                             return Padding(
@@ -205,8 +209,8 @@ class TrendingCard extends GetView<MealPlannerUiController> {
                                 isFilled
                                     ? Icons.star
                                     : isHalf
-                                        ? Icons.star_half
-                                        : Icons.star_outline,
+                                    ? Icons.star_half
+                                    : Icons.star_outline,
                                 size: 13,
                                 color: isFilled || isHalf
                                     ? const Color(0xFFFFBF00)
@@ -258,30 +262,16 @@ class TrendingCard extends GetView<MealPlannerUiController> {
                             width: 27,
                             height: 27,
                             decoration: BoxDecoration(
-                              color: isAdding
-                                  ? const Color(0xFFFFA15D)
-                                  : const Color(0xFFFF6A00),
+                              color: const Color(0xFFFF6A00),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: IconButton(
                               padding: EdgeInsets.zero,
-                              icon: isAdding
-                                  ? const SizedBox(
-                                      width: 12,
-                                      height: 12,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1.7,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.shopping_bag_outlined,
-                                      size: 16,
-                                      color: Colors.white,
-                                    ),
+                              icon: const Icon(
+                                Icons.shopping_bag_outlined,
+                                size: 16,
+                                color: Colors.white,
+                              ),
                               onPressed: isAdding
                                   ? null
                                   : () => controller.onTrendingBagPressed(item),
