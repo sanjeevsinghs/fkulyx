@@ -5,12 +5,12 @@ class ApiEndpoints {
 
   static const String login = '$base/auth/login';
   static const String trendingProducts = '$base/products/trending';
+  static const String products = '$base/products';
   static const String categories = '$base/categories';
 
   // Wishlist endpoints
   static const String wishlistAdd = '$base/wishlist/add';
   static const String wishlistRemove = '$base/wishlist/remove';
-
 
   // Cart endpoints
 

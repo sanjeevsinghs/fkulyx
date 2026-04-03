@@ -8,4 +8,5 @@ export 'meal_planner_screen_model.dart';
 export 'pagination_model.dart';
 export 'product_model.dart';
 export 'trending_products_response_model.dart';
+// export 'trending_products_response_model.dart' hide Pagination, Product;
 export 'cart_item_model.dart';

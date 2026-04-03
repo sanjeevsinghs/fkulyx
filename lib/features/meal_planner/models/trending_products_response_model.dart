@@ -74,10 +74,7 @@ class TrendingProductsData {
 
   /// Factory for empty/default trending products data
   factory TrendingProductsData.empty() {
-    return TrendingProductsData(
-      products: [],
-      pagination: Pagination.empty(),
-    );
+    return TrendingProductsData(products: [], pagination: Pagination.empty());
   }
 
   Map<String, dynamic> toJson() {

@@ -16,7 +16,7 @@ class Loder extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(16)),
               boxShadow: <BoxShadow>[
                 BoxShadow(
-                  color: Color(0x1A000000),
+                  color: Colors.transparent,
                   blurRadius: 18,
                   offset: Offset(0, 8),
                 ),

@@ -292,23 +292,28 @@ class MealPlannerView extends StatelessWidget {
                                 ),
                               ),
                               GridView.builder(
-                                itemCount:
-                                    uiController.visibleCategories.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisSpacing: 10,
-                                      crossAxisSpacing: 10,
-                                      childAspectRatio: 1.3,
-                                    ),
-                                itemBuilder: (context, index) {
-                                  return CategoryCard(
-                                    item: uiController.visibleCategories[index],
-                                  );
-                                },
-                              ),
+                                    itemCount:
+                                        uiController.visibleCategories.length,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                          // crossAxisCount: crossAxisCount,
+                                          crossAxisCount: 2,
+                                          mainAxisSpacing: 10,
+                                          crossAxisSpacing: 10,
+                                          mainAxisExtent: 140,
+                                        ),
+                                    itemBuilder: (context, index) {
+                                      return CategoryCard(
+                                        item: uiController
+                                            .visibleCategories[index],
+                                      );
+                                    },
+                                  ),
+                                
+                              
                               const SizedBox(height: 20),
                               Row(
                                 children: [
@@ -386,7 +391,8 @@ class MealPlannerView extends StatelessWidget {
                                         crossAxisCount: 2,
                                         mainAxisSpacing: 10,
                                         crossAxisSpacing: 10,
-                                        childAspectRatio: 0.63,
+                                        // childAspectRatio: 0.63,
+                                        mainAxisExtent: 280,
                                       ),
                                   itemBuilder: (context, index) {
                                     return TrendingCard(
