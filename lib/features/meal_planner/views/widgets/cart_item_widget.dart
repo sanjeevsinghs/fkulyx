@@ -24,7 +24,7 @@ class CartItemWidget extends StatelessWidget {
         border: Border.all(color: const Color(0xFFD3D3D3), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black,
             blurRadius: 3,
             offset: const Offset(0, 1),
           ),

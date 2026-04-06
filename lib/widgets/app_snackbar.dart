@@ -13,7 +13,7 @@ class AppSnackbar {
       titleText: const SizedBox.shrink(),
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(12),
-      borderRadius: 10,
+      borderRadius: 50,
       backgroundColor: const Color(0xFFE8F5E9),
       borderColor: const Color(0xFF66BB6A),
       borderWidth: 1,

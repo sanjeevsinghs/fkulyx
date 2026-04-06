@@ -1,4 +1,4 @@
-// To parse this JSON data, do
+// to parse this json data, do
 //
 //     final welcome = welcomeFromJson(jsonString);
 

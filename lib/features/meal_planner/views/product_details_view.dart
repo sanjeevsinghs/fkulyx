@@ -110,11 +110,9 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       width: 34,
                       height: 34,
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.25),
+                        color: Colors.black,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.8),
-                        ),
+                        border: Border.all(color: Colors.white),
                       ),
                       child: const Icon(
                         Icons.favorite_border,
