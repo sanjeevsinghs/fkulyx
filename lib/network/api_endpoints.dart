@@ -7,6 +7,9 @@ class ApiEndpoints {
   static const String trendingProducts = '$base/products/trending';
   static const String products = '$base/products';
   static const String categories = '$base/categories';
+  static const String communityPosts = '$base/community/posts';
+  static const String communityGroups = '$base/community/groups';
+  static const String usersLimited = '$base/users/limited';
 
   // Wishlist endpoints
   static const String wishlistAdd = '$base/wishlist/add';

@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:kulyx/widgets/custom_color.dart';
+import 'package:kulyx/widgets/images.dart';
 
 /// Forum Post Card Widget for displaying community posts/content
 class ForumPostCardWidget extends StatelessWidget {
   final String postTitle;
+  final String postContent;
   final String postImage;
-  final List<String> tags;
+  final List<String>? tags;
+  final String repostedBy;
   final String authorName;
   final String authorTitle;
   final String authorImage;
   final int views;
   final int likes;
   final int comments;
+  final bool isLiked;
+  final bool isFollowing;
   final VoidCallback? onLikeTap;
   final VoidCallback? onFollowTap;
   final VoidCallback? onCardTap;
@@ -19,14 +24,18 @@ class ForumPostCardWidget extends StatelessWidget {
   const ForumPostCardWidget({
     super.key,
     required this.postTitle,
+    this.postContent = '',
     required this.postImage,
     required this.tags,
+    this.repostedBy = '',
     required this.authorName,
     required this.authorTitle,
     required this.authorImage,
     required this.views,
     required this.likes,
     required this.comments,
+    this.isLiked = false,
+    this.isFollowing = false,
     this.onLikeTap,
     this.onFollowTap,
     this.onCardTap,
@@ -34,11 +43,15 @@ class ForumPostCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final postImageProvider = _imageProvider(postImage);
+    final authorImageProvider = _imageProvider(authorImage);
+    final safeTags = tags ?? const <String>[];
+
     return GestureDetector(
       onTap: onCardTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: CustomColors.lightGray,
           borderRadius: BorderRadius.circular(14),
@@ -46,12 +59,23 @@ class ForumPostCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (repostedBy.trim().isNotEmpty) ...[
+              Text(
+                'Reposted by @$repostedBy',
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: CustomColors.textGray,
+                  fontFamily: 'Forum',
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
             Container(
               height: 160,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
                 image: DecorationImage(
-                  image: AssetImage(postImage),
+                  image: postImageProvider,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -77,26 +101,38 @@ class ForumPostCardWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: onLikeTap,
                   child: Container(
-                    width: 28,
-                    height: 28,
+                    width: 30,
+                    height: 30,
                     decoration: const BoxDecoration(
                       color: CustomColors.primaryOrange,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      size: 16,
-                      color: CustomColors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Image(image: AssetImage(AssetsImages.likeIcon)),
                     ),
                   ),
                 ),
               ],
             ),
+            if (postContent.trim().isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                postContent,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: CustomColors.textGray,
+                  fontFamily: 'Forum',
+                ),
+              ),
+            ],
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: tags
+              children: safeTags
                   .map(
                     (tag) => Container(
                       padding: const EdgeInsets.symmetric(
@@ -112,7 +148,6 @@ class ForumPostCardWidget extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 10,
                           color: CustomColors.cardGray,
-                          fontFamily: 'Forum',
                         ),
                       ),
                     ),
@@ -123,12 +158,12 @@ class ForumPostCardWidget extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 34,
-                  height: 34,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: AssetImage(authorImage),
+                      image: authorImageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -139,19 +174,17 @@ class ForumPostCardWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '$authorName •',
+                        '$authorName•',
                         style: const TextStyle(
-                          fontSize: 13,
-                          color: CustomColors.cardGray,
-                          fontFamily: 'Forum',
+                          fontSize: 14,
+                          color: CustomColors.black,
                         ),
                       ),
                       Text(
                         authorTitle,
                         style: const TextStyle(
                           fontSize: 10,
-                          color: CustomColors.textGray,
-                          fontFamily: 'Forum',
+                          color: CustomColors.mediumGray,
                         ),
                       ),
                     ],
@@ -160,22 +193,26 @@ class ForumPostCardWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: onFollowTap,
                   child: Container(
-                    width: 84,
-                    height: 34,
+                    width: 75,
+                    height: 28,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: CustomColors.white,
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: const Color(0xFFBBBBBB),
+                        color: isFollowing
+                            ? CustomColors.primaryOrange
+                            : const Color(0xFFBBBBBB),
                         width: 1,
                       ),
                     ),
-                    child: const Text(
-                      'Follow',
+                    child: Text(
+                      isFollowing ? 'Following' : 'Follow',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: CustomColors.cardGray,
+                        fontSize: 16,
+                        color: isFollowing
+                            ? CustomColors.primaryOrange
+                            : CustomColors.cardGray,
                         fontFamily: 'Forum',
                       ),
                     ),
@@ -204,14 +241,22 @@ class ForumPostCardWidget extends StatelessWidget {
     return text.replaceAllMapped(regExp, (match) => ',');
   }
 
+  ImageProvider _imageProvider(String path) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
+    }
+
+    if (path.isNotEmpty) {
+      return AssetImage(path);
+    }
+
+    return const AssetImage('assets/images/splash.png');
+  }
+
   Widget _buildStatItem(String text) {
     return Text(
       text,
-      style: const TextStyle(
-        fontSize: 12,
-        color: CustomColors.textGray,
-        fontFamily: 'Forum',
-      ),
+      style: const TextStyle(fontSize: 12, color: CustomColors.mediumGray),
     );
   }
 }

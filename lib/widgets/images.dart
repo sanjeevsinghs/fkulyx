@@ -6,6 +6,8 @@ class AssetsImages {
 
   static const String comNewIcon = 'assets/icons/com_new_icon.png';
   static const String comPopularIcon = 'assets/icons/com_popular_icon.png';
+  static const String likeIcon = 'assets/icons/like.png';
+  static const String person = 'assets/icons/person.png';
 
   //images
   static const String splash = 'assets/images/splash.png';

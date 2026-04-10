@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kulyx/widgets/custom_color.dart';
 import 'community_category_card_widget.dart';
 
-/// Community Category Cards Section (Newest and Recent + Popular)
 class CommunityCategoryCardsSection extends StatelessWidget {
   final Widget newestIcon;
   final Widget popularIcon;
