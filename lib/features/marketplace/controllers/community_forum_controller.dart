@@ -1,376 +1,141 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/features/marketplace/models/index.dart';
-import 'package:kulyx/network/api_endpoints.dart';
-import 'package:kulyx/network/network_api_services.dart';
+import 'package:kulyx/features/marketplace/controllers/community_events_controller.dart';
+import 'package:kulyx/features/marketplace/controllers/community_groups_controller.dart';
+import 'package:kulyx/features/marketplace/controllers/community_people_controller.dart';
+import 'package:kulyx/features/marketplace/controllers/community_posts_controller.dart';
 
 class CommunityForumController extends GetxController {
-  static const int _pageSize = 10;
+  final CommunityPostsController postsController;
+  final CommunityPeopleController peopleController;
+  final CommunityGroupsController groupsController;
+  final CommunityEventsController eventsController;
 
-  final NetworkApiServices _apiService = NetworkApiServices();
+  CommunityForumController({
+    required this.postsController,
+    required this.peopleController,
+    required this.groupsController,
+    required this.eventsController,
+  });
+
   final RxString selectedFilter = 'ALL'.obs;
   final RxString searchQuery = ''.obs;
   final TextEditingController searchController = TextEditingController();
-  final RxBool isLoadingPosts = false.obs;
-  final RxBool isLoadingMorePosts = false.obs;
-  final RxBool hasMorePosts = true.obs;
-  final RxString postError = ''.obs;
-  final RxBool isLoadingPeople = false.obs;
-  final RxBool isLoadingMorePeople = false.obs;
-  final RxBool hasMorePeople = true.obs;
-  final RxString peopleError = ''.obs;
-  final RxBool isLoadingGroups = false.obs;
-  final RxBool isLoadingMoreGroups = false.obs;
-  final RxBool hasMoreGroups = true.obs;
-  final RxString groupError = ''.obs;
-  final RxInt postPage = 1.obs;
-  final RxInt peoplePage = 1.obs;
-  final RxInt groupPage = 1.obs;
-  final RxList<ForumPost> allPosts = <ForumPost>[].obs;
-  final RxList<ForumPerson> allPeople = <ForumPerson>[].obs;
-  final RxList<ForumGroup> allGroups = <ForumGroup>[].obs;
-  final RxSet<String> likedPostIds = <String>{}.obs;
-  final RxSet<String> followedPostIds = <String>{}.obs;
-  final RxSet<String> followedPeopleIds = <String>{}.obs;
+
+  RxBool get isLoadingPosts => postsController.isLoading;
+  RxBool get isLoadingMorePosts => postsController.isLoadingMore;
+  RxBool get hasMorePosts => postsController.hasMore;
+  RxString get postError => postsController.error;
+  RxInt get postPage => postsController.page;
+  RxList<ForumPost> get allPosts => postsController.items;
+
+  RxBool get isLoadingPeople => peopleController.isLoading;
+  RxBool get isLoadingMorePeople => peopleController.isLoadingMore;
+  RxBool get hasMorePeople => peopleController.hasMore;
+  RxString get peopleError => peopleController.error;
+  RxInt get peoplePage => peopleController.page;
+  RxList<ForumPerson> get allPeople => peopleController.items;
+
+  RxBool get isLoadingGroups => groupsController.isLoading;
+  RxBool get isLoadingMoreGroups => groupsController.isLoadingMore;
+  RxBool get hasMoreGroups => groupsController.hasMore;
+  RxString get groupError => groupsController.error;
+  RxInt get groupPage => groupsController.page;
+  RxList<ForumGroup> get allGroups => groupsController.items;
+
+  RxBool get isLoadingEvents => eventsController.isLoading;
+  RxBool get isLoadingMoreEvents => eventsController.isLoadingMore;
+  RxBool get hasMoreEvents => eventsController.hasMore;
+  RxString get eventError => eventsController.error;
+  RxInt get eventPage => eventsController.page;
+  RxList<ForumEvent> get allEvents => eventsController.items;
 
   @override
   void onInit() {
     super.onInit();
-    fetchCommunityPosts(reset: true);
-    initializePeople(reset: true);
-    fetchCommunityGroups(reset: true);
+    refreshVisibleSections();
   }
 
-  Future<void> fetchCommunityPosts({
-    int page = 1,
-    int limit = _pageSize,
-    bool includeInactive = false,
-    String sortBy = 'createdAt',
-    String sortOrder = 'desc',
-    bool reset = false,
-  }) async {
-    if (isLoadingPosts.value || isLoadingMorePosts.value) {
-      return;
-    }
+  Future<void> loadMorePosts() => postsController.loadMore();
 
-    if (!reset && !hasMorePosts.value) {
-      return;
-    }
+  Future<void> loadMorePeople() => peopleController.loadMore();
 
-    if (reset) {
-      postPage.value = 1;
-      hasMorePosts.value = true;
-      isLoadingPosts.value = true;
-      postError.value = '';
-    } else {
-      isLoadingMorePosts.value = true;
-    }
+  Future<void> loadMoreGroups() => groupsController.loadMore();
 
-    try {
-      final uri = Uri.parse(ApiEndpoints.communityPosts).replace(
-        queryParameters: <String, String>{
-          'page': '$page',
-          'limit': '$limit',
-          'includeInactive': '$includeInactive',
-          'sortBy': sortBy,
-          'sortOrder': sortOrder,
-        },
-      );
-
-      final response = await _apiService.getApi(uri.toString());
-      if (response is! Map<String, dynamic>) {
-        throw Exception('Unexpected posts response format');
-      }
-
-      final success = response['success'] == true;
-      final data = response['data'] as Map<String, dynamic>?;
-      final items = (data?['items'] as List?) ?? const [];
-
-      if (!success) {
-        throw Exception(
-          response['message']?.toString() ?? 'Failed to load posts',
-        );
-      }
-
-      final posts = items
-          .whereType<Map<String, dynamic>>()
-          .map(ForumPost.fromJson)
-          .toList();
-
-      if (reset) {
-        allPosts.assignAll(posts);
-      } else {
-        allPosts.addAll(posts);
-      }
-
-      hasMorePosts.value = posts.length >= limit;
-      postPage.value = page;
-      _syncPostInteractionState(allPosts);
-    } catch (e) {
-      postError.value = e.toString();
-      if (reset) {
-        allPosts.clear();
-        likedPostIds.clear();
-        followedPostIds.clear();
-      }
-    } finally {
-      if (reset) {
-        isLoadingPosts.value = false;
-      } else {
-        isLoadingMorePosts.value = false;
-      }
-    }
-  }
-
-  Future<void> initializePeople({
-    int page = 1,
-    int limit = _pageSize,
-    bool reset = false,
-  }) async {
-    if (isLoadingPeople.value || isLoadingMorePeople.value) {
-      return;
-    }
-
-    if (!reset && !hasMorePeople.value) {
-      return;
-    }
-
-    if (reset) {
-      peoplePage.value = 1;
-      hasMorePeople.value = true;
-      isLoadingPeople.value = true;
-      peopleError.value = '';
-    } else {
-      isLoadingMorePeople.value = true;
-    }
-
-    try {
-      final uri = Uri.parse(
-        ApiEndpoints.usersLimited,
-      ).replace(
-        queryParameters: <String, String>{
-          'limit': '$limit',
-          'page': '$page',
-        },
-      );
-
-      final response = await _apiService.getApi(uri.toString());
-      if (response is! Map<String, dynamic>) {
-        throw Exception('Unexpected users response format');
-      }
-
-      final success = response['success'] == true;
-      final data = response['data'] as Map<String, dynamic>?;
-      final items = (data?['items'] as List?) ?? const [];
-
-      if (!success) {
-        throw Exception(
-          response['message']?.toString() ?? 'Failed to load users',
-        );
-      }
-
-      final people = items
-          .whereType<Map<String, dynamic>>()
-          .map(ForumPerson.fromJson)
-          .toList();
-
-      if (reset) {
-        allPeople.assignAll(people);
-      } else {
-        allPeople.addAll(people);
-      }
-
-      hasMorePeople.value = people.length >= limit;
-      peoplePage.value = page;
-      _syncPeopleInteractionState(allPeople);
-    } catch (e) {
-      peopleError.value = e.toString();
-      if (reset) {
-        allPeople.clear();
-        followedPeopleIds.clear();
-      }
-    } finally {
-      if (reset) {
-        isLoadingPeople.value = false;
-      } else {
-        isLoadingMorePeople.value = false;
-      }
-    }
-  }
-
-  Future<void> fetchCommunityGroups({
-    int page = 1,
-    int limit = _pageSize,
-    bool includeInactive = false,
-    String sortBy = 'createdAt',
-    String sortOrder = 'desc',
-    bool reset = false,
-  }) async {
-    if (isLoadingGroups.value || isLoadingMoreGroups.value) {
-      return;
-    }
-
-    if (!reset && !hasMoreGroups.value) {
-      return;
-    }
-
-    if (reset) {
-      groupPage.value = 1;
-      hasMoreGroups.value = true;
-      isLoadingGroups.value = true;
-      groupError.value = '';
-    } else {
-      isLoadingMoreGroups.value = true;
-    }
-
-    try {
-      final uri = Uri.parse(ApiEndpoints.communityGroups).replace(
-        queryParameters: <String, String>{
-          'page': '$page',
-          'limit': '$limit',
-          'includeInactive': '$includeInactive',
-          'sortBy': sortBy,
-          'sortOrder': sortOrder,
-        },
-      );
-
-      final response = await _apiService.getApi(uri.toString());
-      if (response is! Map<String, dynamic>) {
-        throw Exception('Unexpected groups response format');
-      }
-
-      final success = response['success'] == true;
-      final data = response['data'] as Map<String, dynamic>?;
-      final items = (data?['items'] as List?) ?? const [];
-
-      if (!success) {
-        throw Exception(
-          response['message']?.toString() ?? 'Failed to load groups',
-        );
-      }
-
-      final groups = items
-          .whereType<Map<String, dynamic>>()
-          .map(ForumGroup.fromJson)
-          .toList();
-
-      if (reset) {
-        allGroups.assignAll(groups);
-      } else {
-        allGroups.addAll(groups);
-      }
-
-      hasMoreGroups.value = groups.length >= limit;
-      groupPage.value = page;
-    } catch (e) {
-      groupError.value = e.toString();
-      if (reset) {
-        allGroups.clear();
-      }
-    } finally {
-      if (reset) {
-        isLoadingGroups.value = false;
-      } else {
-        isLoadingMoreGroups.value = false;
-      }
-    }
-  }
-
-  Future<void> loadMorePosts() async {
-    await fetchCommunityPosts(
-      page: postPage.value + 1,
-      limit: _pageSize,
-      reset: false,
-    );
-  }
-
-  Future<void> loadMorePeople() async {
-    await initializePeople(
-      page: peoplePage.value + 1,
-      limit: _pageSize,
-      reset: false,
-    );
-  }
-
-  Future<void> loadMoreGroups() async {
-    await fetchCommunityGroups(
-      page: groupPage.value + 1,
-      limit: _pageSize,
-      reset: false,
-    );
-  }
+  Future<void> loadMoreEvents() => eventsController.loadMore();
 
   Future<void> loadMoreForVisibleSections() async {
     final currentFilter = selectedFilter.value;
-    final shouldLoadPosts = currentFilter == 'ALL' || currentFilter == 'Post';
-    final shouldLoadPeople =
-        currentFilter == 'ALL' || currentFilter == 'People';
-    final shouldLoadGroups = currentFilter == 'ALL' || currentFilter == 'Group';
+    final jobs = <Future<void>>[];
 
-    if (shouldLoadPosts) {
-      await loadMorePosts();
+    if (currentFilter == 'ALL' || currentFilter == 'Post') {
+      jobs.add(postsController.loadMore());
     }
 
-    if (shouldLoadPeople) {
-      await loadMorePeople();
+    if (currentFilter == 'ALL' || currentFilter == 'People') {
+      jobs.add(peopleController.loadMore());
     }
 
-    if (shouldLoadGroups) {
-      await loadMoreGroups();
+    if (currentFilter == 'ALL' || currentFilter == 'Group') {
+      jobs.add(groupsController.loadMore());
     }
+
+    if (currentFilter == 'ALL' || currentFilter == 'Event') {
+      jobs.add(eventsController.loadMore());
+    }
+
+    await Future.wait<void>(jobs);
   }
 
-  void _syncPostInteractionState(List<ForumPost> posts) {
-    likedPostIds
-      ..clear()
-      ..addAll(posts.where((post) => post.isLiked).map((post) => post.id));
+  Future<void> refreshVisibleSections() async {
+    final currentFilter = selectedFilter.value;
+    final jobs = <Future<void>>[];
 
-    followedPostIds
-      ..clear()
-      ..addAll(posts.where((post) => post.isFollow).map((post) => post.id));
-  }
-
-  bool isPostLiked(String postId) => likedPostIds.contains(postId);
-
-  void togglePostLike(String postId) {
-    if (likedPostIds.contains(postId)) {
-      likedPostIds.remove(postId);
+    if (currentFilter == 'ALL') {
+      jobs.addAll(<Future<void>>[
+        postsController.refreshData(),
+        peopleController.refreshData(),
+        groupsController.refreshData(),
+        eventsController.refreshData(),
+      ]);
+      await Future.wait<void>(jobs);
       return;
     }
 
-    likedPostIds.add(postId);
-  }
-
-  bool isPostFollowed(String postId) => followedPostIds.contains(postId);
-
-  void togglePostFollow(String postId) {
-    if (followedPostIds.contains(postId)) {
-      followedPostIds.remove(postId);
+    if (currentFilter == 'Post') {
+      await postsController.refreshData();
       return;
     }
 
-    followedPostIds.add(postId);
+    if (currentFilter == 'People') {
+      await peopleController.refreshData();
+      return;
+    }
+
+    if (currentFilter == 'Group') {
+      await groupsController.refreshData();
+      return;
+    }
+
+    if (currentFilter == 'Event') {
+      await eventsController.refreshData();
+    }
   }
+
+  bool isPostLiked(String postId) => postsController.isLiked(postId);
+
+  void togglePostLike(String postId) => postsController.toggleLike(postId);
+
+  bool isPostFollowed(String postId) => postsController.isFollowed(postId);
+
+  void togglePostFollow(String postId) => postsController.toggleFollow(postId);
 
   bool isPersonFollowed(String personId) =>
-      followedPeopleIds.contains(personId);
+      peopleController.isFollowed(personId);
 
-  void _syncPeopleInteractionState(List<ForumPerson> people) {
-    followedPeopleIds
-      ..clear()
-      ..addAll(
-        people.where((person) => person.isFollow).map((person) => person.id),
-      );
-  }
-
-  void togglePersonFollow(String personId) {
-    if (followedPeopleIds.contains(personId)) {
-      followedPeopleIds.remove(personId);
-      return;
-    }
-
-    followedPeopleIds.add(personId);
-  }
+  void togglePersonFollow(String personId) =>
+      peopleController.toggleFollow(personId);
 
   List<ForumPost> get filteredPosts {
     final currentFilter = selectedFilter.value;
@@ -378,16 +143,7 @@ class CommunityForumController extends GetxController {
       return <ForumPost>[];
     }
 
-    final query = searchQuery.value.trim().toLowerCase();
-    if (query.isEmpty) {
-      return allPosts;
-    }
-
-    return allPosts.where((post) {
-      return post.title.toLowerCase().contains(query) ||
-          post.authorName.toLowerCase().contains(query) ||
-          post.safeTags.any((tag) => tag.toLowerCase().contains(query));
-    }).toList();
+    return postsController.filtered(searchQuery.value);
   }
 
   List<ForumPerson> get filteredPeople {
@@ -396,16 +152,7 @@ class CommunityForumController extends GetxController {
       return <ForumPerson>[];
     }
 
-    final query = searchQuery.value.trim().toLowerCase();
-    if (query.isEmpty) {
-      return allPeople;
-    }
-
-    return allPeople.where((person) {
-      return person.name.toLowerCase().contains(query) ||
-          person.role.toLowerCase().contains(query) ||
-          person.tags.any((tag) => tag.toLowerCase().contains(query));
-    }).toList();
+    return peopleController.filtered(searchQuery.value);
   }
 
   List<ForumGroup> get filteredGroups {
@@ -414,16 +161,7 @@ class CommunityForumController extends GetxController {
       return <ForumGroup>[];
     }
 
-    final query = searchQuery.value.trim().toLowerCase();
-    if (query.isEmpty) {
-      return allGroups;
-    }
-
-    return allGroups.where((group) {
-      return group.name.toLowerCase().contains(query) ||
-          group.category.toLowerCase().contains(query) ||
-          group.location.toLowerCase().contains(query);
-    }).toList();
+    return groupsController.filtered(searchQuery.value);
   }
 
   void selectFilter(String filter) {
@@ -457,12 +195,22 @@ class CommunityForumController extends GetxController {
     return groups;
   }
 
-  bool get hasMoreGroupsForGroupFilter {
-    if (selectedFilter.value != 'Group') {
-      return false;
+  List<ForumEvent> get filteredEvents {
+    final currentFilter = selectedFilter.value;
+    if (currentFilter != 'ALL' && currentFilter != 'Event') {
+      return <ForumEvent>[];
     }
 
-    return hasMoreGroups.value;
+    return eventsController.filtered(searchQuery.value);
+  }
+
+  List<ForumEvent> eventsForDisplay(String filter) {
+    final events = filteredEvents;
+    if (filter == 'ALL') {
+      return events.take(2).toList();
+    }
+
+    return events;
   }
 
   void onSearchChanged(String value) {

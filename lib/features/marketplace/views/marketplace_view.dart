@@ -7,6 +7,7 @@ import 'package:kulyx/widgets/images.dart';
 import 'package:kulyx/features/marketplace/widgets/community_header_widget.dart';
 import 'package:kulyx/features/marketplace/widgets/community_category_cards_section.dart';
 import 'package:kulyx/features/marketplace/widgets/community_filter_chips_section.dart';
+import 'package:kulyx/features/marketplace/widgets/forum_event_card_widget.dart';
 import 'package:kulyx/features/marketplace/widgets/forum_group_card_widget.dart';
 import 'package:kulyx/features/marketplace/widgets/forum_people_card_widget.dart';
 import 'package:kulyx/features/marketplace/widgets/forum_post_card_widget.dart';
@@ -85,12 +86,33 @@ class MarketplaceView extends GetView<CommunityForumController> {
                 final posts = controller.postsForDisplay(selected);
                 final people = controller.peopleForDisplay(selected);
                 final groups = controller.groupsForDisplay(selected);
+                final events = controller.eventsForDisplay(selected);
 
                 final showPosts = selected == 'ALL' || selected == 'Post';
                 final showPeople = selected == 'ALL' || selected == 'People';
                 final showGroups = selected == 'ALL' || selected == 'Group';
+                final showEvents = selected == 'ALL' || selected == 'Event';
+                final isAllFilter = selected == 'ALL';
 
-                if (!showPosts && !showPeople && !showGroups) {
+                final showAllInitialLoader =
+                    isAllFilter &&
+                    controller.allPosts.isEmpty &&
+                    controller.allPeople.isEmpty &&
+                    controller.allGroups.isEmpty &&
+                    controller.allEvents.isEmpty &&
+                    (controller.isLoadingPosts.value ||
+                        controller.isLoadingPeople.value ||
+                        controller.isLoadingGroups.value ||
+                        controller.isLoadingEvents.value);
+
+                final showAllLoadMoreLoader =
+                    isAllFilter &&
+                    (controller.isLoadingMorePosts.value ||
+                        controller.isLoadingMorePeople.value ||
+                        controller.isLoadingMoreGroups.value ||
+                        controller.isLoadingMoreEvents.value);
+
+                if (!showPosts && !showPeople && !showGroups && !showEvents) {
                   return Center(
                     child: Text(
                       'No content available for this filter',
@@ -102,6 +124,10 @@ class MarketplaceView extends GetView<CommunityForumController> {
                   );
                 }
 
+                if (showAllInitialLoader) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
                 return NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
                     if (notification.metrics.pixels >=
@@ -111,128 +137,184 @@ class MarketplaceView extends GetView<CommunityForumController> {
 
                     return false;
                   },
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: [
-                      if (showPosts) ...[
-                        _buildSectionHeader(
-                          title: 'Posts',
-                          showViewAll: selected == 'ALL',
-                          onViewAllTap: () => controller.selectFilter('Post'),
-                        ),
-                        const SizedBox(height: 12),
-                        if (controller.isLoadingPosts.value)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 24),
-                            child: Center(child: CircularProgressIndicator()),
-                          )
-                        else if (controller.postError.value.isNotEmpty)
-                          _buildEmptyState('Unable to load posts right now')
-                        else if (posts.isEmpty)
-                          _buildEmptyState('No posts found')
-                        else
-                          ...posts.map(
-                            (post) => ForumPostCardWidget(
-                              postTitle: post.title,
-                              postImage: post.image,
-                              tags: post.safeTags,
-                              authorName: post.authorName,
-                              authorTitle: post.authorTitle,
-                              authorImage: post.authorImage,
-                              views: post.views,
-                              likes: post.likes,
-                              comments: post.comments,
-                              isLiked: controller.isPostLiked(post.id),
-                              isFollowing: controller.isPostFollowed(post.id),
-                              onLikeTap: () =>
-                                  controller.togglePostLike(post.id),
-                              onFollowTap: () =>
-                                  controller.togglePostFollow(post.id),
-                              onCardTap: () {},
-                            ),
+                  child: RefreshIndicator(
+                    onRefresh: controller.refreshVisibleSections,
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        if (showPosts) ...[
+                          _buildSectionHeader(
+                            title: 'Posts',
+                            showViewAll: selected == 'ALL',
+                            onViewAllTap: () => controller.selectFilter('Post'),
                           ),
-                      ],
-                      if (showPeople) ...[
-                        if (showPosts) const SizedBox(height: 10),
-                        _buildSectionHeader(
-                          title: 'People',
-                          showViewAll: selected == 'ALL',
-                          onViewAllTap: () => controller.selectFilter('People'),
-                        ),
-                        const SizedBox(height: 12),
-                        if (controller.isLoadingPeople.value)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 24),
-                            child: Center(child: CircularProgressIndicator()),
-                          )
-                        else if (controller.peopleError.value.isNotEmpty)
-                          _buildEmptyState('Unable to load people right now')
-                        else if (people.isEmpty)
-                          _buildEmptyState('No people found')
-                        else
-                          ...people.map(
-                            (person) => ForumPeopleCardWidget(
-                              name: person.name,
-                              role: person.role,
-                              location: person.location,
-                              image: person.image,
-                              tags: person.tags,
-                              isFollowing: controller.isPersonFollowed(
-                                person.id,
+                          const SizedBox(height: 12),
+                          if (!isAllFilter && controller.isLoadingPosts.value)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (controller.postError.value.isNotEmpty)
+                            _buildEmptyState('Unable to load posts right now')
+                          else if (posts.isEmpty)
+                            _buildEmptyState('No posts found')
+                          else
+                            ...posts.map(
+                              (post) => ForumPostCardWidget(
+                                postTitle: post.title,
+                                postImage: post.image,
+                                tags: post.safeTags,
+                                authorName: post.authorName,
+                                authorTitle: post.authorTitle,
+                                authorImage: post.authorImage,
+                                views: post.views,
+                                likes: post.likes,
+                                comments: post.comments,
+                                isLiked: controller.isPostLiked(post.id),
+                                isFollowing: controller.isPostFollowed(post.id),
+                                onLikeTap: () =>
+                                    controller.togglePostLike(post.id),
+                                onFollowTap: () =>
+                                    controller.togglePostFollow(post.id),
+                                onCardTap: () {},
                               ),
-                              onFollowTap: () =>
-                                  controller.togglePersonFollow(person.id),
-                              onCardTap: () {},
                             ),
+                        ],
+                        if (showPeople) ...[
+                          if (showPosts) const SizedBox(height: 10),
+                          _buildSectionHeader(
+                            title: 'People',
+                            showViewAll: selected == 'ALL',
+                            onViewAllTap: () =>
+                                controller.selectFilter('People'),
                           ),
-                      ],
-                      if (showGroups) ...[
-                        if (showPosts || showPeople) const SizedBox(height: 10),
-                        _buildSectionHeader(
-                          title: 'Groups',
-                          showViewAll: selected == 'ALL',
-                          onViewAllTap: () => controller.selectFilter('Group'),
-                        ),
-                        const SizedBox(height: 12),
-                        if (controller.isLoadingGroups.value)
+                          const SizedBox(height: 12),
+                          if (!isAllFilter && controller.isLoadingPeople.value)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (controller.peopleError.value.isNotEmpty)
+                            _buildEmptyState('Unable to load people right now')
+                          else if (people.isEmpty)
+                            _buildEmptyState('No people found')
+                          else
+                            ...people.map(
+                              (person) => ForumPeopleCardWidget(
+                                name: person.name,
+                                role: person.role,
+                                location: person.location,
+                                image: person.image,
+                                tags: person.tags,
+                                isFollowing: controller.isPersonFollowed(
+                                  person.id,
+                                ),
+                                onFollowTap: () =>
+                                    controller.togglePersonFollow(person.id),
+                                onCardTap: () {},
+                              ),
+                            ),
+                        ],
+                        if (showGroups) ...[
+                          if (showPosts || showPeople)
+                            const SizedBox(height: 10),
+                          _buildSectionHeader(
+                            title: 'Groups',
+                            showViewAll: selected == 'ALL',
+                            onViewAllTap: () =>
+                                controller.selectFilter('Group'),
+                          ),
+                          const SizedBox(height: 12),
+                          if (!isAllFilter && controller.isLoadingGroups.value)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (controller.groupError.value.isNotEmpty)
+                            _buildEmptyState('Unable to load groups right now')
+                          else if (groups.isEmpty)
+                            _buildEmptyState('No groups found')
+                          else
+                            ...groups.map(
+                              (group) => ForumGroupCardWidget(
+                                name: group.name,
+                                groupType: group.groupType,
+                                location: group.location,
+                                description: group.description,
+                                image: group.image,
+                                onJoinTap: () {},
+                                onCardTap: () {},
+                              ),
+                            ),
+                        ],
+                        if (showEvents) ...[
+                          if (showPosts || showPeople || showGroups)
+                            const SizedBox(height: 10),
+                          _buildSectionHeader(
+                            title: 'Events',
+                            showViewAll: selected == 'ALL',
+                            onViewAllTap: () =>
+                                controller.selectFilter('Event'),
+                          ),
+                          const SizedBox(height: 12),
+                          if (!isAllFilter && controller.isLoadingEvents.value)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (controller.eventError.value.isNotEmpty)
+                            _buildEmptyState('Unable to load events right now')
+                          else if (events.isEmpty)
+                            _buildEmptyState('No events found')
+                          else
+                            ...events.map(
+                              (event) => ForumEventCardWidget(
+                                title: event.name,
+                                coverImage: event.coverImage,
+                                dateLabel: event.startLabel,
+                                locationLabel: event.locationText,
+                                description: event.description,
+                                attendeeCount: event.attendeeCount,
+                                onCardTap: () {},
+                              ),
+                            ),
+                        ],
+                        if (!isAllFilter &&
+                            showPosts &&
+                            controller.isLoadingMorePosts.value)
                           const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 24),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             child: Center(child: CircularProgressIndicator()),
-                          )
-                        else if (controller.groupError.value.isNotEmpty)
-                          _buildEmptyState('Unable to load groups right now')
-                        else if (groups.isEmpty)
-                          _buildEmptyState('No groups found')
-                        else
-                          ...groups.map(
-                            (group) => ForumGroupCardWidget(
-                              name: group.name,
-                              category: group.category,
-                              location: group.location,
-                              description: group.description,
-                              image: group.image,
-                              onJoinTap: () {},
-                              onCardTap: () {},
-                            ),
                           ),
+                        if (!isAllFilter &&
+                            showPeople &&
+                            controller.isLoadingMorePeople.value)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        if (!isAllFilter &&
+                            showGroups &&
+                            controller.isLoadingMoreGroups.value)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        if (!isAllFilter &&
+                            showEvents &&
+                            controller.isLoadingMoreEvents.value)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        if (showAllLoadMoreLoader)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        const SizedBox(height: 10),
                       ],
-                      if (showPosts && controller.isLoadingMorePosts.value)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                      if (showPeople && controller.isLoadingMorePeople.value)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                      if (showGroups && controller.isLoadingMoreGroups.value)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
                   ),
                 );
               }),

@@ -3,7 +3,7 @@ class ForumGroup {
 
   final String id;
   final String name;
-  final String category;
+  final String groupType;
   final String location;
   final String description;
   final String image;
@@ -14,7 +14,7 @@ class ForumGroup {
   const ForumGroup({
     required this.id,
     required this.name,
-    required this.category,
+    required this.groupType,
     required this.location,
     required this.description,
     required this.image,
@@ -24,13 +24,6 @@ class ForumGroup {
   });
 
   factory ForumGroup.fromJson(Map<String, dynamic> json) {
-    final categories =
-        (json['categories'] as List?)
-            ?.whereType<String>()
-            .where((item) => item.trim().isNotEmpty)
-            .toList() ??
-        const <String>[];
-
     final rawLocation = json['location'];
     final locationText = rawLocation is String && rawLocation.trim().isNotEmpty
         ? rawLocation
@@ -39,9 +32,7 @@ class ForumGroup {
     return ForumGroup(
       id: _asString(json['_id']),
       name: _asString(json['name'], fallback: 'Unnamed Group'),
-      category: categories.isEmpty
-          ? _asString(json['groupType'], fallback: 'Community Group')
-          : categories.join(' / '),
+      groupType: _asString(json['groupType'], fallback: 'Community Group'),
       location: locationText,
       description: _asString(
         json['description'],

@@ -4,7 +4,7 @@ import 'package:kulyx/widgets/images.dart';
 
 class ForumGroupCardWidget extends StatelessWidget {
   final String name;
-  final String category;
+  final String groupType;
   final String location;
   final String description;
   final String image;
@@ -14,7 +14,7 @@ class ForumGroupCardWidget extends StatelessWidget {
   const ForumGroupCardWidget({
     super.key,
     required this.name,
-    required this.category,
+    required this.groupType,
     required this.location,
     required this.description,
     required this.image,
@@ -68,7 +68,7 @@ class ForumGroupCardWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        category,
+                        groupType,
                         maxLines: 2,
                         style: const TextStyle(
                           fontSize: 14,

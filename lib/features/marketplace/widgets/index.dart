@@ -9,3 +9,4 @@ export 'community_filter_chips_section.dart';
 export 'forum_post_card_widget.dart';
 export 'forum_user_info_widget.dart';
 export 'forum_people_card_widget.dart';
+export 'forum_event_card_widget.dart';
