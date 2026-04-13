@@ -10,6 +10,7 @@ class ApiEndpoints {
   static const String communityPosts = '$base/community/posts';
   static const String communityGroups = '$base/community/groups';
   static const String communityEvents = '$base/community/events';
+  static const String followers = '$base/followers';
   static const String usersLimited = '$base/users/limited';
 
   // Wishlist endpoints

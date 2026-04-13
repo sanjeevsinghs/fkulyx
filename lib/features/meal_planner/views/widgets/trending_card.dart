@@ -50,7 +50,8 @@ class TrendingCard extends GetView<MealPlannerUiController> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: AspectRatio(
-                          aspectRatio: 1.15,
+                          aspectRatio: 1.3,
+                          // aspectRatio: 1.15,
                           child: item.imageUrl.isNotEmpty
                               ? Image.network(
                                   item.imageUrl,

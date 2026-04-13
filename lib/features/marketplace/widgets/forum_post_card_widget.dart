@@ -27,7 +27,7 @@ class ForumPostCardWidget extends StatelessWidget {
     this.postContent = '',
     required this.postImage,
     required this.tags,
-    this.repostedBy = '',
+    required this.repostedBy,
     required this.authorName,
     required this.authorTitle,
     required this.authorImage,
@@ -60,16 +60,25 @@ class ForumPostCardWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (repostedBy.trim().isNotEmpty) ...[
-              Text(
-                'Reposted by @$repostedBy',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: CustomColors.textGray,
-                  fontFamily: 'Forum',
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.repeat, size: 16, color: CustomColors.mediumGray),
+                  SizedBox(width: 5),
+                  Text(
+                    'Reposted by $repostedBy',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color.fromARGB(255, 22, 21, 21),
+                      fontFamily: 'Forum',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
-              const SizedBox(height: 8),
             ],
+            const SizedBox(height: 8),
             Container(
               height: 160,
               decoration: BoxDecoration(
@@ -103,8 +112,10 @@ class ForumPostCardWidget extends StatelessWidget {
                   child: Container(
                     width: 30,
                     height: 30,
-                    decoration: const BoxDecoration(
-                      color: CustomColors.primaryOrange,
+                    decoration: BoxDecoration(
+                      color: isLiked
+                          ? CustomColors.primaryOrange
+                          : const Color(0xFFE8E5DF),
                       shape: BoxShape.circle,
                     ),
                     child: Padding(
@@ -193,8 +204,10 @@ class ForumPostCardWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: onFollowTap,
                   child: Container(
-                    width: 75,
-                    height: 28,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: CustomColors.white,

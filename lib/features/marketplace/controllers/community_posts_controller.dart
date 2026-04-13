@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:kulyx/features/marketplace/models/index.dart';
 import 'package:kulyx/network/api_endpoints.dart';
 import 'package:kulyx/network/network_api_services.dart';
+import 'package:kulyx/widgets/app_snackbar.dart';
 
 class CommunityPostsController extends GetxController {
   static const int pageSize = 10;
@@ -16,6 +17,8 @@ class CommunityPostsController extends GetxController {
   final RxInt page = 1.obs;
   final RxSet<String> likedPostIds = <String>{}.obs;
   final RxSet<String> followedPostIds = <String>{}.obs;
+  final RxSet<String> likingPostIds = <String>{}.obs;
+  final RxSet<String> followingUserIds = <String>{}.obs;
 
   Future<void> fetch({
     int pageNumber = 1,
@@ -121,24 +124,94 @@ class CommunityPostsController extends GetxController {
 
   bool isLiked(String postId) => likedPostIds.contains(postId);
 
-  void toggleLike(String postId) {
-    if (likedPostIds.contains(postId)) {
-      likedPostIds.remove(postId);
+  Future<void> toggleLike(String postId) async {
+    if (postId.trim().isEmpty || likingPostIds.contains(postId)) {
       return;
     }
 
-    likedPostIds.add(postId);
+    likingPostIds.add(postId);
+
+    try {
+      final response = await _apiService.postApi(
+        null,
+        '${ApiEndpoints.communityPosts}/$postId/like',
+      );
+
+      if (response is! Map<String, dynamic>) {
+        throw Exception('Unexpected like response format');
+      }
+
+      final success = response['success'] == true;
+      final message = (response['message'] ?? 'Failed to update like')
+          .toString();
+
+      if (!success) {
+        throw Exception(message);
+      }
+
+      final data = response['data'] as Map<String, dynamic>?;
+      final serverIsLiked = data?['isLiked'] == true;
+
+      if (serverIsLiked) {
+        likedPostIds.add(postId);
+      } else {
+        likedPostIds.remove(postId);
+      }
+
+      _syncPostLikeData(postId: postId, data: data);
+    } catch (e) {
+      AppSnackbar.show(e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      likingPostIds.remove(postId);
+    }
   }
 
   bool isFollowed(String postId) => followedPostIds.contains(postId);
 
-  void toggleFollow(String postId) {
-    if (followedPostIds.contains(postId)) {
-      followedPostIds.remove(postId);
+  Future<void> followAuthor({
+    required String postId,
+    required String authorId,
+  }) async {
+    final cleanAuthorId = authorId.trim();
+    if (postId.trim().isEmpty || cleanAuthorId.isEmpty) {
+      AppSnackbar.show('Creator id not available');
       return;
     }
 
-    followedPostIds.add(postId);
+    if (followingUserIds.contains(cleanAuthorId)) {
+      return;
+    }
+
+    followingUserIds.add(cleanAuthorId);
+
+    try {
+      final response = await _apiService.postApi(
+        null,
+        '${ApiEndpoints.followers}/$cleanAuthorId/follow',
+      );
+
+      if (response is! Map<String, dynamic>) {
+        throw Exception('Unexpected follow response format');
+      }
+
+      final success = response['success'] == true;
+      final message = (response['message'] ?? 'Follow request failed')
+          .toString();
+
+      AppSnackbar.show(message);
+
+      if (!success) {
+        return;
+      }
+
+      final data = response['data'] as Map<String, dynamic>?;
+      final isFollowing = data?['isFollowing'] == true;
+      _syncPostFollowData(authorId: cleanAuthorId, isFollowing: isFollowing);
+    } catch (e) {
+      AppSnackbar.show(e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      followingUserIds.remove(cleanAuthorId);
+    }
   }
 
   void _syncInteractionState(List<ForumPost> posts) {
@@ -149,5 +222,46 @@ class CommunityPostsController extends GetxController {
     followedPostIds
       ..clear()
       ..addAll(posts.where((post) => post.isFollow).map((post) => post.id));
+  }
+
+  void _syncPostLikeData({
+    required String postId,
+    required Map<String, dynamic>? data,
+  }) {
+    if (data == null) {
+      return;
+    }
+
+    final index = items.indexWhere((post) => post.id == postId);
+    if (index == -1) {
+      return;
+    }
+
+    final current = items[index];
+    final updated = current.copyWith(
+      isLiked: data['isLiked'] == true,
+      likes: (data['likes'] as num?)?.toInt() ?? current.likes,
+    );
+
+    items[index] = updated;
+  }
+
+  void _syncPostFollowData({
+    required String authorId,
+    required bool isFollowing,
+  }) {
+    for (var i = 0; i < items.length; i++) {
+      final post = items[i];
+      if (post.createdBy != authorId) {
+        continue;
+      }
+
+      items[i] = post.copyWith(isFollow: isFollowing);
+      if (isFollowing) {
+        followedPostIds.add(post.id);
+      } else {
+        followedPostIds.remove(post.id);
+      }
+    }
   }
 }

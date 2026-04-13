@@ -17,10 +17,30 @@ class ForumPerson {
     required this.tags,
   });
 
+  ForumPerson copyWith({
+    String? id,
+    String? name,
+    String? role,
+    String? location,
+    String? image,
+    bool? isFollow,
+    List<String>? tags,
+  }) {
+    return ForumPerson(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      location: location ?? this.location,
+      image: image ?? this.image,
+      isFollow: isFollow ?? this.isFollow,
+      tags: tags ?? this.tags,
+    );
+  }
+
   factory ForumPerson.fromJson(Map<String, dynamic> json) {
     final role = _resolveRole(json['roles']);
     return ForumPerson(
-      id: json['id']?.toString() ?? '',
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? (json['username']?.toString() ?? ''),
       role: role,
       location: '@${json['username']?.toString() ?? ''}',

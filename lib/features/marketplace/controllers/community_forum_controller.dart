@@ -125,17 +125,21 @@ class CommunityForumController extends GetxController {
 
   bool isPostLiked(String postId) => postsController.isLiked(postId);
 
-  void togglePostLike(String postId) => postsController.toggleLike(postId);
+  Future<void> togglePostLike(String postId) =>
+      postsController.toggleLike(postId);
 
   bool isPostFollowed(String postId) => postsController.isFollowed(postId);
 
-  void togglePostFollow(String postId) => postsController.toggleFollow(postId);
+  Future<void> followPostAuthor({
+    required String postId,
+    required String authorId,
+  }) => postsController.followAuthor(postId: postId, authorId: authorId);
 
   bool isPersonFollowed(String personId) =>
       peopleController.isFollowed(personId);
 
-  void togglePersonFollow(String personId) =>
-      peopleController.toggleFollow(personId);
+    Future<void> followOrUnfollowPerson(String personId) =>
+      peopleController.followOrUnfollow(personId);
 
   List<ForumPost> get filteredPosts {
     final currentFilter = selectedFilter.value;

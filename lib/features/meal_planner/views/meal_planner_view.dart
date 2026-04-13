@@ -300,8 +300,8 @@ class MealPlannerView extends StatelessWidget {
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                       // crossAxisCount: crossAxisCount,
                                       crossAxisCount: 2,
-                                      mainAxisSpacing: 10,
-                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 8,
+                                      crossAxisSpacing: 8,
                                       mainAxisExtent: 140,
                                     ),
                                 itemBuilder: (context, index) {
@@ -386,10 +386,10 @@ class MealPlannerView extends StatelessWidget {
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
-                                        mainAxisSpacing: 10,
-                                        crossAxisSpacing: 10,
-                                        childAspectRatio: 0.63,
-                                        // mainAxisExtent: 280,
+                                        mainAxisSpacing: 8,
+                                        crossAxisSpacing: 8,
+                                        // childAspectRatio: 0.63,
+                                        mainAxisExtent: 280,
                                       ),
                                   itemBuilder: (context, index) {
                                     return TrendingCard(
@@ -544,9 +544,10 @@ class MealPlannerView extends StatelessWidget {
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
-                                        mainAxisSpacing: 10,
-                                        crossAxisSpacing: 10,
-                                        childAspectRatio: 0.63,
+                                        mainAxisSpacing: 8,
+                                        crossAxisSpacing: 8,
+                                        // childAspectRatio: 0.63,
+                                        mainAxisExtent: 280,
                                       ),
                                   itemBuilder: (context, index) {
                                     return TrendingCard(
