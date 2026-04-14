@@ -8,6 +8,7 @@ class ForumGroupCardWidget extends StatelessWidget {
   final String location;
   final String description;
   final String image;
+  final bool isJoined;
   final VoidCallback? onJoinTap;
   final VoidCallback? onCardTap;
 
@@ -18,6 +19,7 @@ class ForumGroupCardWidget extends StatelessWidget {
     required this.location,
     required this.description,
     required this.image,
+    this.isJoined = false,
     this.onJoinTap,
     this.onCardTap,
   });
@@ -118,21 +120,27 @@ class ForumGroupCardWidget extends StatelessWidget {
             GestureDetector(
               onTap: onJoinTap,
               child: Container(
-                width: 120,
+                width: 170,
                 height: 34,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
+                  color: isJoined
+                      ? CustomColors.primaryOrange
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(22),
                   border: Border.all(
                     color: CustomColors.primaryOrange,
                     width: 1,
                   ),
                 ),
-                child: const Text(
-                  'Join',
+                child: Text(
+                  isJoined ? 'Joined' : 'Join Group',
+                  // '$isJoined',
                   style: TextStyle(
-                    fontSize: 24,
-                    color: CustomColors.primaryOrange,
+                    fontSize: 16,
+                    color: isJoined
+                        ? CustomColors.white
+                        : CustomColors.primaryOrange,
                     fontFamily: 'Forum',
                     height: 1,
                   ),

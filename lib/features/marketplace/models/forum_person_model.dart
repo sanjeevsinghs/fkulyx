@@ -45,7 +45,7 @@ class ForumPerson {
       role: role,
       location: '@${json['username']?.toString() ?? ''}',
       image: _resolveProfileImage(json['profileImage']),
-      isFollow: json['isFollow'] == true,
+      isFollow: json['isFollow'] == true || json['isFollowing'] == true,
       tags: _parseTags(json['tags']),
     );
   }

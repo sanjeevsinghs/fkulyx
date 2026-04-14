@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/features/marketplace/controllers/community_forum_controller.dart';
+import 'package:kulyx/view_model/join_group_viewmodel.dart';
 import 'package:kulyx/features/marketplace/widgets/community_category_cards_section.dart';
 import 'package:kulyx/features/marketplace/widgets/community_filter_chips_section.dart';
 import 'package:kulyx/features/marketplace/widgets/community_header_widget.dart';
@@ -12,9 +13,12 @@ import 'package:kulyx/widgets/custom_color.dart';
 import 'package:kulyx/widgets/custom_text_field.dart';
 import 'package:kulyx/widgets/images.dart';
 import 'package:kulyx/widgets/loder.dart';
+import 'package:kulyx/widgets/app_snackbar.dart';
 
 class MarketplaceView extends GetView<CommunityForumController> {
   const MarketplaceView({super.key});
+
+  JoinGroupViewmodel get _joinGroupVm => Get.put(JoinGroupViewmodel());
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +188,9 @@ class MarketplaceView extends GetView<CommunityForumController> {
                             isFollowing: controller.isPersonFollowed(person.id),
                             onFollowTap: () =>
                                 controller.followOrUnfollowPerson(person.id),
-                            onCardTap: () {},
+                            onCardTap: () {
+                              AppSnackbar.show('Person id: ${person.id}');
+                            },
                           ),
                         ),
                     ],
@@ -204,15 +210,38 @@ class MarketplaceView extends GetView<CommunityForumController> {
                         _buildEmptyState('No groups found')
                       else
                         ...groups.map(
-                          (group) => ForumGroupCardWidget(
-                            name: group.name,
-                            groupType: group.groupType,
-                            location: group.location,
-                            description: group.description,
-                            image: group.image,
-                            onJoinTap: () {},
-                            onCardTap: () {},
-                          ),
+                          (group) => Obx(() {
+                            final joinedState = _joinGroupVm
+                                .joinedStateForGroup(group.id, group.isJoined);
+
+                            return ForumGroupCardWidget(
+                              name: group.name,
+                              groupType: group.groupType,
+                              location: group.location,
+                              description: group.description,
+                              image: group.image,
+                              isJoined: joinedState,
+                              onJoinTap: () async {
+                                final response = await _joinGroupVm
+                                    .fetchJoinGroupData(group.id);
+                                final latestJoined =
+                                    response?.data?.isJoined ??
+                                    _joinGroupVm.joinedStateForGroup(
+                                      group.id,
+                                      group.isJoined,
+                                    );
+                                final apiMessage = response?.message?.trim();
+                                AppSnackbar.show(
+                                  (apiMessage != null && apiMessage.isNotEmpty)
+                                      ? '$apiMessage | isJoined: $latestJoined'
+                                      : 'isJoined: $latestJoined',
+                                );
+                              },
+                              onCardTap: () {
+                                // AppSnackbar.show('Group id: ${group.id}');
+                              },
+                            );
+                          }),
                         ),
                     ],
                     if (showEvents) ...[

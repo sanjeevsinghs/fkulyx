@@ -38,7 +38,9 @@ class ForumGroup {
         json['description'],
         fallback: 'No description available',
       ),
-      image: _normalizeImagePath(_asString(json['image'])),
+      image: _normalizeImagePath(
+        _asString(json['coverImage'], fallback: _asString(json['image'])),
+      ),
       memberCount: _asInt(json['memberCount']),
       isJoined: json['isJoined'] == true,
       isRequested: json['isRequested'] == true,

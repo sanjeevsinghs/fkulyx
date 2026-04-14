@@ -128,9 +128,7 @@ class CommunityPeopleController extends GetxController {
 
     followActionInProgressIds.add(cleanPersonId);
     try {
-      final alreadyFollowing = isFollowed(cleanPersonId);
-      final action = alreadyFollowing ? 'unfollow' : 'follow';
-      final url = '${ApiEndpoints.followers}/$cleanPersonId/$action';
+      final url = '${ApiEndpoints.followers}/$cleanPersonId/follow';
 
       final response = await _apiService.postApi(null, url);
       if (response is! Map<String, dynamic>) {

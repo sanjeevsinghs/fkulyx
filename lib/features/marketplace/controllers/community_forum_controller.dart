@@ -138,7 +138,7 @@ class CommunityForumController extends GetxController {
   bool isPersonFollowed(String personId) =>
       peopleController.isFollowed(personId);
 
-    Future<void> followOrUnfollowPerson(String personId) =>
+  Future<void> followOrUnfollowPerson(String personId) =>
       peopleController.followOrUnfollow(personId);
 
   List<ForumPost> get filteredPosts {
