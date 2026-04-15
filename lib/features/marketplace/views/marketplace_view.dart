@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/features/marketplace/controllers/community_forum_controller.dart';
-import 'package:kulyx/view_model/join_group_viewmodel.dart';
+import 'package:kulyx/routes/app_routes.dart';
+import 'package:kulyx/view_model/Community_forum/join_group_viewmodel.dart';
 import 'package:kulyx/features/marketplace/widgets/community_category_cards_section.dart';
 import 'package:kulyx/features/marketplace/widgets/community_filter_chips_section.dart';
 import 'package:kulyx/features/marketplace/widgets/community_header_widget.dart';
@@ -189,7 +190,7 @@ class MarketplaceView extends GetView<CommunityForumController> {
                             onFollowTap: () =>
                                 controller.followOrUnfollowPerson(person.id),
                             onCardTap: () {
-                              AppSnackbar.show('Person id: ${person.id}');
+                              // AppSnackbar.show('Person id: ${person.id}');
                             },
                           ),
                         ),
@@ -268,7 +269,25 @@ class MarketplaceView extends GetView<CommunityForumController> {
                             locationLabel: event.locationText,
                             description: event.description,
                             attendeeCount: event.attendeeCount,
-                            onCardTap: () {},
+                            onCardTap: () {
+                              Get.toNamed(
+                                AppRoutes.eventDetailsScreen,
+                                arguments: {
+                                  'eventId': event.id,
+                                  'eventName': event.name,
+                                  'coverImage': event.coverImage,
+                                  'dateLabel': event.startLabel,
+                                  'addressLine': event.location.address,
+                                  'venueLine': event.locationText,
+                                  'description': event.description,
+                                  'attendeeCount': event.attendeeCount,
+                                  'hostName': 'Yasin Youcef',
+                                  'speakerRole':
+                                      'Certified Yoga Ther.\nEducator | Keynote',
+                                  'speakerFollowers': 196,
+                                },
+                              );
+                            },
                           ),
                         ),
                     ],

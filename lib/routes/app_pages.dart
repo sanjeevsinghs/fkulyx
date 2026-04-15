@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kulyx/bindings/auth_binding.dart';
 import 'package:kulyx/bindings/dashboard_binding.dart';
+import 'package:kulyx/bindings/event_details_binding.dart';
 import 'package:kulyx/bindings/lms_binding.dart';
 import 'package:kulyx/bindings/marketplace_binding.dart';
 import 'package:kulyx/bindings/meal_planner_binding.dart';
@@ -13,6 +14,7 @@ import 'package:kulyx/features/meal_planner/views/cart_view.dart';
 import 'package:kulyx/features/meal_planner/views/product_details_view.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/cart_controller.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/product_details_controller.dart';
+import 'package:kulyx/screens/event_detail_screen.dart';
 
 class AppPages {
   static final List<GetPage<dynamic>> pages = [
@@ -54,6 +56,11 @@ class AppPages {
           );
         }
       }),
+    ),
+    GetPage(
+      name: AppRoutes.eventDetailsScreen,
+      page: () => const EventDetailScreen(),
+      binding: EventDetailsBinding(),
     ),
   ];
 }

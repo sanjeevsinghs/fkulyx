@@ -8,4 +8,7 @@ class AppRoutes {
   static const cart = '/cart';
   static const productDetails = '/product-details';
   static const dashboard = '/dashboard';
+
+  // Community and Forum
+  static const eventDetailsScreen = '/community/event-details';
 }

@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:kulyx/model/join_group_model.dart';
+import 'package:kulyx/model/community_forum/join_group_model.dart';
 import 'package:kulyx/network/respone_handler.dart';
-import 'package:kulyx/repository/community_Forum_repo/market_planer/Join_group_repo.dart';
+import 'package:kulyx/repository/community_Forum_repo/communitiy_forum_repo.dart';
 
 class JoinGroupViewmodel extends GetxController {
-  final JoinGroupRepo _repo = JoinGroupRepo();
+  final CommunityForumRepo  _repo = CommunityForumRepo();
 
   final Rx<ApiResponse<JoinGroupModel>> _joinGroupResponse =
       ApiResponse<JoinGroupModel>.loading().obs;
