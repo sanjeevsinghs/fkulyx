@@ -159,7 +159,27 @@ class MarketplaceView extends GetView<CommunityForumController> {
                               authorId: post.createdBy,
                             ),
                             onCardTap: () {
-                              // print('Tapped post: ${post.createdBy.}');
+                              Get.toNamed(
+                                AppRoutes.postDetailsScreen,
+                                arguments: {
+                                  'postId': post.id,
+                                  'postTitle': post.title,
+                                  'postContent': post.content,
+                                  'postImage': post.image,
+                                  'tags': post.safeTags,
+                                  'repostedBy': post.repostedBy,
+                                  'authorName': post.authorName,
+                                  'authorTitle': post.authorTitle,
+                                  'authorImage': post.authorImage,
+                                  'views': post.views,
+                                  'likes': post.likes,
+                                  'comments': post.comments,
+                                  'isLiked': controller.isPostLiked(post.id),
+                                  'isFollowing': controller.isPostFollowed(
+                                    post.id,
+                                  ),
+                                },
+                              );
                             },
                           ),
                         ),
@@ -190,7 +210,18 @@ class MarketplaceView extends GetView<CommunityForumController> {
                             onFollowTap: () =>
                                 controller.followOrUnfollowPerson(person.id),
                             onCardTap: () {
-                              // AppSnackbar.show('Person id: ${person.id}');
+                              Get.toNamed(
+                                AppRoutes.personDetailsScreen,
+                                arguments: {
+                                  'personId': person.id,
+                                  'name': person.name,
+                                  'role': person.role,
+                                  'image': person.image,
+                                  'isFollowing': controller.isPersonFollowed(
+                                    person.id,
+                                  ),
+                                },
+                              );
                             },
                           ),
                         ),

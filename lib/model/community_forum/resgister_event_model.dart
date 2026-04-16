@@ -4,24 +4,24 @@
 
 import 'dart:convert';
 
-EventRegisterModel eventRegisterModelFromJson(String str) => EventRegisterModel.fromJson(json.decode(str));
+RegisterEventModel registerEventModelFromJson(String str) => RegisterEventModel.fromJson(json.decode(str));
 
-String eventRegisterModelToJson(EventRegisterModel data) => json.encode(data.toJson());
+String registerEventModelToJson(RegisterEventModel data) => json.encode(data.toJson());
 
-class EventRegisterModel {
+class RegisterEventModel {
     bool? success;
     Data? data;
     String? message;
     int? statusCode;
 
-    EventRegisterModel({
+    RegisterEventModel({
         this.success,
         this.data,
         this.message,
         this.statusCode,
     });
 
-    factory EventRegisterModel.fromJson(Map<String, dynamic> json) => EventRegisterModel(
+    factory RegisterEventModel.fromJson(Map<String, dynamic> json) => RegisterEventModel(
         success: json["success"],
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
         message: json["message"],

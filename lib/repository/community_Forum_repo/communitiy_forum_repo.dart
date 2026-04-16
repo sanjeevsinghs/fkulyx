@@ -1,6 +1,9 @@
+import 'package:get/get.dart';
 import 'package:kulyx/model/community_forum/event_details_model.dart';
 import 'package:kulyx/model/community_forum/join_group_model.dart';
-import 'package:kulyx/model/community_forum/register_event_model.dart';
+import 'package:kulyx/model/community_forum/post_details_model.dart';
+import 'package:kulyx/model/community_forum/resgister_event_model.dart';
+
 import 'package:kulyx/network/api_endpoints.dart';
 import 'package:kulyx/network/network_api_services.dart';
 
@@ -165,18 +168,21 @@ class CommunityForumRepo {
       );
     }
   }
-  //   final response = await _apiService.getApi(
-  //     ApiEndpoints.challengesLeaderboard,
-  //   );
-  //   return GamificationChallengesLeaderboardModel.fromJson(response);
-  // }
+ 
 
   // Future<GamificationChallengesModel> allChallenges() async {
   //   final response = await _apiService.getApi(
   //     ApiEndpoints.allChallenges,
   //   );
   //   return GamificationChallengesModel.fromJson(response);
-  // }
+// }
+
+  Future<PostDetailsModel> postDetail(String postId) async {
+    final response = await _apiService.getApi(
+      '${ApiEndpoints.communityPosts}/$postId',
+    );
+    return PostDetailsModel.fromJson(response);
+  }  
 
   // Future<ChallengesMyRankingsModel> challengeMyRanking() async {
   //   final response = await _apiService.getApi(

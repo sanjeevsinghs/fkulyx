@@ -1,3 +1,4 @@
+
 class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
@@ -11,4 +12,6 @@ class AppRoutes {
 
   // Community and Forum
   static const eventDetailsScreen = '/community/event-details';
+  static const personDetailsScreen = '/community/person-details';
+  static const postDetailsScreen = '/community/post-details';
 }
