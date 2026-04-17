@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:kulyx/model/community_forum/event_details_model.dart';
 import 'package:kulyx/model/community_forum/join_group_model.dart';
 import 'package:kulyx/model/community_forum/post_details_model.dart';
@@ -168,21 +167,109 @@ class CommunityForumRepo {
       );
     }
   }
- 
 
   // Future<GamificationChallengesModel> allChallenges() async {
   //   final response = await _apiService.getApi(
   //     ApiEndpoints.allChallenges,
   //   );
   //   return GamificationChallengesModel.fromJson(response);
-// }
+  // }
 
   Future<PostDetailsModel> postDetail(String postId) async {
     final response = await _apiService.getApi(
       '${ApiEndpoints.communityPosts}/$postId',
     );
     return PostDetailsModel.fromJson(response);
-  }  
+  }
+
+  Future<PostDetailsModel> upVotePost(String postId) async {
+    final response = await _apiService.postApi(
+      null,
+      '${ApiEndpoints.communityPosts}/$postId/upvote',
+    );
+    return PostDetailsModel.fromJson(response);
+  }
+
+  Future<PostDetailsModel> downVotePost(String postId) async {
+    final response = await _apiService.postApi(
+      null,
+      '${ApiEndpoints.communityPosts}/$postId/downvote',
+    );
+    return PostDetailsModel.fromJson(response);
+  }
+
+  Future<Map<String, dynamic>> createComment({
+    required String postId,
+    required String content,
+    String parentCommentId = '',
+  }) async {
+    final response = await _apiService.postApi({
+      'postId': postId,
+      'content': content,
+      'parentCommentId': parentCommentId,
+      'metadata': <String, dynamic>{},
+    }, ApiEndpoints.communityComments);
+
+    if (response is Map<String, dynamic>) {
+      return response;
+    }
+
+    return <String, dynamic>{
+      'success': false,
+      'message': 'Unexpected comment response format',
+    };
+  }
+
+  Future<Map<String, dynamic>> replyToComment({
+    required String commentId,
+    required String content,
+  }) async {
+    final response = await _apiService.postApi({
+      'content': content,
+      'metadata': <String, dynamic>{},
+    }, '${ApiEndpoints.communityComments}/$commentId/reply');
+
+    if (response is Map<String, dynamic>) {
+      return response;
+    }
+
+    return <String, dynamic>{
+      'success': false,
+      'message': 'Unexpected reply response format',
+    };
+  }
+
+  Future<Map<String, dynamic>> likeComment(String commentId) async {
+    final response = await _apiService.postApi(
+      null,
+      '${ApiEndpoints.communityComments}/$commentId/like',
+    );
+
+    if (response is Map<String, dynamic>) {
+      return response;
+    }
+
+    return <String, dynamic>{
+      'success': false,
+      'message': 'Unexpected like response format',
+    };
+  }
+
+  Future<Map<String, dynamic>> dislikeComment(String commentId) async {
+    final response = await _apiService.postApi(
+      null,
+      '${ApiEndpoints.communityComments}/$commentId/dislike',
+    );
+
+    if (response is Map<String, dynamic>) {
+      return response;
+    }
+
+    return <String, dynamic>{
+      'success': false,
+      'message': 'Unexpected dislike response format',
+    };
+  }
 
   // Future<ChallengesMyRankingsModel> challengeMyRanking() async {
   //   final response = await _apiService.getApi(

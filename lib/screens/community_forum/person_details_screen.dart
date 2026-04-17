@@ -193,21 +193,13 @@ class _FollowButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color
-                // : isFollowing
-                //     ? CustomColors.white
-                :
-                CustomColors.primaryOrange,
+            color: CustomColors.primaryOrange,
             borderRadius: BorderRadius.circular(50),
           ),
           child: Text(
             isFollowing ? 'Following' : '+ Follow',
             style: TextStyle(
-              color:
-                  //  isFollowing
-                  // ? CustomColors.primaryOrange
-                  // :
-                  CustomColors.white,
+              color: CustomColors.white,
               fontSize: 15,
               fontWeight: FontWeight.w600,
             ),

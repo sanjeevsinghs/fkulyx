@@ -8,6 +8,7 @@ class ApiEndpoints {
   static const String products = '$base/products';
   static const String categories = '$base/categories';
   static const String communityPosts = '$base/community/posts';
+  static const String communityComments = '$base/community/comments';
   static const String communityGroups = '$base/community/groups';
   static const String communityEvents = '$base/community/events';
   static const String communityEventAttendees =

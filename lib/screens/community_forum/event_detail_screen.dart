@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kulyx/network/respone_handler.dart';
-import 'package:kulyx/screens/community_forum/event_detail_body.dart';
+import 'package:kulyx/screens/community_forum/widgets/event_detail_body.dart';
 import 'package:kulyx/screens/community_forum/widgets/event_detail_state_widgets.dart';
 import 'package:kulyx/view_model/Community_forum/event_details_viewmodel.dart';
 

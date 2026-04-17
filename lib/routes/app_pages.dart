@@ -14,9 +14,10 @@ import 'package:kulyx/features/meal_planner/views/cart_view.dart';
 import 'package:kulyx/features/meal_planner/views/product_details_view.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/cart_controller.dart';
 import 'package:kulyx/features/meal_planner/viewmodels/product_details_controller.dart';
-import 'package:kulyx/screens/person_Details_screen.dart';
-import 'package:kulyx/screens/event_detail_screen.dart';
-import 'package:kulyx/screens/post_details_screen.dart';
+import 'package:kulyx/screens/community_forum/add_post_sceen.dart';
+import 'package:kulyx/screens/community_forum/person_details_screen.dart';
+import 'package:kulyx/screens/community_forum/event_detail_screen.dart';
+import 'package:kulyx/screens/community_forum/post_details_screen.dart';
 import 'package:kulyx/bindings/post_details_binding.dart';
 
 class AppPages {
@@ -73,6 +74,10 @@ class AppPages {
       name: AppRoutes.postDetailsScreen,
       page: () => const PostDetailsScreen(),
       binding: PostDetailsBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.addPostScreen,
+      page: () => const AddPostScreen(),
     ),
   ];
 }

@@ -14,4 +14,5 @@ class AppRoutes {
   static const eventDetailsScreen = '/community/event-details';
   static const personDetailsScreen = '/community/person-details';
   static const postDetailsScreen = '/community/post-details';
+  static const addPostScreen = '/community/add-post';
 }

@@ -188,6 +188,7 @@ class Comment {
     String? content;
     int? likes;
     List<dynamic>? likedBy;
+    bool? isLiked;
     int? dislikes;
     List<dynamic>? dislikedBy;
     DateTime? createdAt;
@@ -206,6 +207,7 @@ class Comment {
         this.content,
         this.likes,
         this.likedBy,
+        this.isLiked,
         this.dislikes,
         this.dislikedBy,
         this.createdAt,
@@ -225,6 +227,7 @@ class Comment {
         content: json["content"],
         likes: json["likes"],
         likedBy: json["likedBy"] == null ? [] : List<dynamic>.from(json["likedBy"]!.map((x) => x)),
+        isLiked: json["isLiked"],
         dislikes: json["dislikes"],
         dislikedBy: json["dislikedBy"] == null ? [] : List<dynamic>.from(json["dislikedBy"]!.map((x) => x)),
         createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
@@ -244,6 +247,7 @@ class Comment {
         "content": content,
         "likes": likes,
         "likedBy": likedBy == null ? [] : List<dynamic>.from(likedBy!.map((x) => x)),
+        "isLiked": isLiked,
         "dislikes": dislikes,
         "dislikedBy": dislikedBy == null ? [] : List<dynamic>.from(dislikedBy!.map((x) => x)),
         "createdAt": createdAt?.toIso8601String(),

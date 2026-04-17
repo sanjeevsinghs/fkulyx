@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomColors {
   // Primary Colors
-  static const Color primaryOrange = Color(0xFFFF6A00);
+  static const Color primaryOrange = Color(0xFFEC5600);
   static const Color softBeige = Color(0xFFF4ECDD);
 
   // Neutral Colors
