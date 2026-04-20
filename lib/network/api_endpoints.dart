@@ -7,6 +7,8 @@ class ApiEndpoints {
   static const String trendingProducts = '$base/products/trending';
   static const String products = '$base/products';
   static const String categories = '$base/categories';
+
+  // community endpoints
   static const String communityPosts = '$base/community/posts';
   static const String communityComments = '$base/community/comments';
   static const String communityGroups = '$base/community/groups';
@@ -28,6 +30,5 @@ class ApiEndpoints {
   static const String cartUser = '$base/cart/user';
   static const String cartDelete = '$base/cart';
   static const String cartItemRemove = '$base/cart/item';
-  // static const String cartUpdate = '$base/cart/update';
-  // static const String cartClear = '$base/cart/clear';
+
 }

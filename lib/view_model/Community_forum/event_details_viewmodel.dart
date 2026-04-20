@@ -116,7 +116,7 @@ class EventDetailsViewmodel extends GetxController {
 
     collapseAbout();
     eventDetailsResponse.value = ApiResponse.loading();
-    final response = await _repo.CommunityEventsDetails(eventId: eventId);
+    final response = await _repo.communityEventsDetails(eventId: eventId);
     if (response.success == true) {
       isSpeakerFollowing.value = response.data?.isFollowing == true;
       speakerFollowersCount.value =

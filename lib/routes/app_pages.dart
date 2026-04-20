@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:kulyx/bindings/auth_binding.dart';
 import 'package:kulyx/bindings/dashboard_binding.dart';
+import 'package:kulyx/bindings/add_post_binding.dart';
 import 'package:kulyx/bindings/event_details_binding.dart';
+import 'package:kulyx/bindings/group_details_binding.dart';
 import 'package:kulyx/bindings/lms_binding.dart';
 import 'package:kulyx/bindings/marketplace_binding.dart';
 import 'package:kulyx/bindings/meal_planner_binding.dart';
@@ -19,6 +21,7 @@ import 'package:kulyx/screens/community_forum/person_details_screen.dart';
 import 'package:kulyx/screens/community_forum/event_detail_screen.dart';
 import 'package:kulyx/screens/community_forum/post_details_screen.dart';
 import 'package:kulyx/bindings/post_details_binding.dart';
+import 'package:kulyx/screens/community_forum/group_details_screeb.dart';
 
 class AppPages {
   static final List<GetPage<dynamic>> pages = [
@@ -34,7 +37,6 @@ class AppPages {
       bindings: [
         AuthBinding(),
         TabBinding(),
-        // HomeBinding(),
         MarketplaceBinding(),
         LmsBinding(),
         MealPlannerBinding(),
@@ -78,6 +80,12 @@ class AppPages {
     GetPage(
       name: AppRoutes.addPostScreen,
       page: () => const AddPostScreen(),
+      binding: AddPostBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.groupDetailsScreen,
+      page: () => const GroupDetailsScreen(),
+      binding: GroupDetailsBinding(),
     ),
   ];
 }

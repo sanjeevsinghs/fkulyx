@@ -897,7 +897,7 @@ class _CommentActionRow extends StatelessWidget {
               ? const Icon(
                   Icons.thumb_down_alt,
                   size: 18,
-                  color: Color(0xFFE53935),
+                  color: Color(0xFF5A8BFF),
                 )
               : const Icon(
                   Icons.thumb_down_alt_outlined,

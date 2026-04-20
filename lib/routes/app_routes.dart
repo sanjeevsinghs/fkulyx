@@ -15,4 +15,5 @@ class AppRoutes {
   static const personDetailsScreen = '/community/person-details';
   static const postDetailsScreen = '/community/post-details';
   static const addPostScreen = '/community/add-post';
+  static const groupDetailsScreen = '/community/group-details';
 }

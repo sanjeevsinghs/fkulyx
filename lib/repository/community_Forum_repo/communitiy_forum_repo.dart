@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:kulyx/model/community_forum/event_details_model.dart';
 import 'package:kulyx/model/community_forum/join_group_model.dart';
 import 'package:kulyx/model/community_forum/post_details_model.dart';
@@ -14,12 +16,7 @@ class CommunityForumRepo {
       final response = await _apiService.postApi({
         'groupId': groupId,
       }, ApiEndpoints.joinGroup);
-      try {
-        final parsedResponse = JoinGroupModel.fromJson(response);
-        return parsedResponse;
-      } catch (parseError) {
-        return JoinGroupModel.fromJson(response);
-      }
+      return JoinGroupModel.fromJson(response);
     } catch (e) {
       String errorMessage = e.toString();
 
@@ -37,21 +34,11 @@ class CommunityForumRepo {
         message: errorMessage.isNotEmpty
             ? errorMessage
             : 'Failed to join group',
-        // member: null,
       );
     }
   }
 
-  // Future<JoinGroupModel> joinGroup(
-  //   required String groupId,
-  // ) async {
-  //   final response = await _apiService.postApi({
-  //     "groupId": groupId,
-  //   }, ApiEndpoints.joinGroup);
-  //   return JoinGroupModel.fromJson(response);
-  // }
-
-  Future<EventDetalsModel> CommunityEventsDetails({
+  Future<EventDetalsModel> communityEventsDetails({
     required String eventId,
   }) async {
     try {
@@ -144,12 +131,7 @@ class CommunityForumRepo {
         ApiEndpoints.communityEventAttendees,
       );
 
-      try {
-        final parsedResponse = RegisterEventModel.fromJson(response);
-        return parsedResponse;
-      } catch (parseError) {
-        return RegisterEventModel.fromJson(response);
-      }
+      return RegisterEventModel.fromJson(response);
     } catch (e) {
       String errorMessage = e.toString();
       if (errorMessage.contains('Exception: ')) {
@@ -167,13 +149,6 @@ class CommunityForumRepo {
       );
     }
   }
-
-  // Future<GamificationChallengesModel> allChallenges() async {
-  //   final response = await _apiService.getApi(
-  //     ApiEndpoints.allChallenges,
-  //   );
-  //   return GamificationChallengesModel.fromJson(response);
-  // }
 
   Future<PostDetailsModel> postDetail(String postId) async {
     final response = await _apiService.getApi(
@@ -196,6 +171,80 @@ class CommunityForumRepo {
       '${ApiEndpoints.communityPosts}/$postId/downvote',
     );
     return PostDetailsModel.fromJson(response);
+  }
+
+  Future<Map<String, dynamic>> createPost({
+    required String title,
+    required String description,
+    List<String> tags = const <String>[],
+    File? imageFile,
+  }) async {
+    final cleanTitle = title.trim();
+    final cleanDescription = description.trim();
+
+    if (cleanTitle.isEmpty) {
+      return <String, dynamic>{
+        'success': false,
+        'message': 'Title is required',
+      };
+    }
+
+    final fields = <String, String>{
+      'title': cleanTitle,
+      'tags': tags.join(','),
+      'polls': '',
+      'media': cleanDescription,
+      'content': cleanDescription,
+    };
+
+    try {
+      if (imageFile != null) {
+        final response = await _apiService.postMultipartApi(
+          url: ApiEndpoints.communityPosts,
+          fields: fields,
+          file: imageFile,
+          fileFieldName: 'mediaFiles',
+          method: 'POST',
+        );
+
+        if (response is Map<String, dynamic>) {
+          return response;
+        }
+
+        return <String, dynamic>{
+          'success': false,
+          'message': 'Unexpected post response format',
+        };
+      }
+
+      final response = await _apiService.postApi(
+        fields,
+        ApiEndpoints.communityPosts,
+      );
+      if (response is Map<String, dynamic>) {
+        return response;
+      }
+
+      return <String, dynamic>{
+        'success': false,
+        'message': 'Unexpected post response format',
+      };
+    } catch (e) {
+      String errorMessage = e.toString();
+      if (errorMessage.contains('Exception: ')) {
+        errorMessage = errorMessage.split('Exception: ').last;
+      }
+      if (errorMessage.contains('FetchDataException: ')) {
+        errorMessage = errorMessage.split('FetchDataException: ').last;
+      }
+
+      return <String, dynamic>{
+        'success': false,
+        'message': errorMessage.isNotEmpty
+            ? errorMessage
+            : 'Failed to create post',
+      };
+    }
   }
 
   Future<Map<String, dynamic>> createComment({
@@ -271,17 +320,30 @@ class CommunityForumRepo {
     };
   }
 
-  // Future<ChallengesMyRankingsModel> challengeMyRanking() async {
-  //   final response = await _apiService.getApi(
-  //     ApiEndpoints.challengeMyRankings,
-  //   );
-  //   return ChallengesMyRankingsModel.fromJson(response);
-  // }
 
-  // Future<ChallengesUserCardsModel> challengeUseCards() async {
-  //   final response = await _apiService.getApi(
-  //     ApiEndpoints.challengeUserCards,
-  //   );
-  //   return ChallengesUserCardsModel.fromJson(response);
-  // }
+  Future<JoinGroupModel> communityGroupDetails({
+    required String groupId,
+  }) async {
+    try {
+      final url = '${ApiEndpoints.communityGroups}/$groupId';
+      final response = await _apiService.getApi(url);
+      return JoinGroupModel.fromJson(response);
+    } catch (e) {
+      String errorMessage = e.toString();
+      if (errorMessage.contains('Exception: ')) {
+        errorMessage = errorMessage.split('Exception: ').last;
+      }
+      if (errorMessage.contains('FetchDataException: ')) {
+        errorMessage = errorMessage.split('FetchDataException: ').last;
+      }
+      return JoinGroupModel(
+        success: false,
+        message: errorMessage.isNotEmpty
+            ? errorMessage
+            : 'Failed to fetch group details',
+      );
+    }
+  }
+
+
 }

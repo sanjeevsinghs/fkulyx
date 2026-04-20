@@ -31,4 +31,6 @@ class AppSnackbar {
       snackStyle: SnackStyle.FLOATING,
     );
   }
+
+  static void showError(String s) {}
 }

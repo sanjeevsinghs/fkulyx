@@ -119,36 +119,4 @@ class AuthViewModel extends GetxController {
       isLoading.value = false;
     }
   }
-
-  // Future<void> logout() async {
-  //   try {
-  //     isLoading.value = true;
-
-  //     NetworkApiServices.accessToken = '';
-  //     // Clear user ID from MealPlannerUiController
-  //     try {
-  //       Get.find<MealPlannerUiController>().currentUserId.value = '';
-  //       Get.find<MealPlannerUiController>().wishlistProductIds.clear();
-  //     } catch (e) {
-  //       if (kDebugMode) print('Error clearing meal planner data: $e');
-  //     }
-
-  //     ApiBaseService.accessToken = '';
-
-  //     currentUser.value = null;
-  //     userName.value = '';
-  //     userEmail.value = '';
-  //     rememberMe.value = false;
-
-  //     Get.offAllNamed(AppRoutes.login);
-  //   } catch (e, st) {
-  //     if (kDebugMode) {
-  //       print('Logout exception: $e');
-  //       print(st);
-  //     }
-  //     Get.snackbar('Error', 'Logout failed: $e');
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
 }

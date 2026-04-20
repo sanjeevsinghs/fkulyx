@@ -270,6 +270,11 @@ class MarketplaceView extends GetView<CommunityForumController> {
                                 );
                               },
                               onCardTap: () {
+                                Get.toNamed(
+                                  AppRoutes.groupDetailsScreen,
+                                  arguments: {'groupId': group.id},
+                                  
+                                );
                                 // AppSnackbar.show('Group id: ${group.id}');
                               },
                             );
