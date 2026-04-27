@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:kulyx/model/community_forum/event_details_model.dart';
+import 'package:kulyx/model/community_forum/group_details_model.dart';
 import 'package:kulyx/model/community_forum/join_group_model.dart';
 import 'package:kulyx/model/community_forum/post_details_model.dart';
 import 'package:kulyx/model/community_forum/resgister_event_model.dart';
@@ -320,14 +321,13 @@ class CommunityForumRepo {
     };
   }
 
-
-  Future<JoinGroupModel> communityGroupDetails({
+  Future<GroupDetailsModel> communityGroupDetails({
     required String groupId,
   }) async {
     try {
       final url = '${ApiEndpoints.communityGroups}/$groupId';
       final response = await _apiService.getApi(url);
-      return JoinGroupModel.fromJson(response);
+      return GroupDetailsModel.fromJson(response);
     } catch (e) {
       String errorMessage = e.toString();
       if (errorMessage.contains('Exception: ')) {
@@ -336,7 +336,7 @@ class CommunityForumRepo {
       if (errorMessage.contains('FetchDataException: ')) {
         errorMessage = errorMessage.split('FetchDataException: ').last;
       }
-      return JoinGroupModel(
+      return GroupDetailsModel(
         success: false,
         message: errorMessage.isNotEmpty
             ? errorMessage
@@ -344,6 +344,4 @@ class CommunityForumRepo {
       );
     }
   }
-
-
 }

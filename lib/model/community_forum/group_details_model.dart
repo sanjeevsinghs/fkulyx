@@ -46,7 +46,7 @@ class Data {
     String? image;
     String? coverImage;
     String? description;
-    List<dynamic>? categories;
+    List<String>? categories;
     String? rules;
     String? groupType;
     bool? inviteMembers;
@@ -97,7 +97,7 @@ class Data {
         image: json["image"],
         coverImage: json["coverImage"],
         description: json["description"],
-        categories: json["categories"] == null ? [] : List<dynamic>.from(json["categories"]!.map((x) => x)),
+        categories: json["categories"] == null ? [] : List<String>.from(json["categories"]!.map((x) => x)),
         rules: json["rules"],
         groupType: json["groupType"],
         inviteMembers: json["inviteMembers"],

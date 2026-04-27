@@ -1,11 +1,10 @@
-
 import 'dart:convert';
 
 // To parse this JSON data, do
 //
 //     final welcome = welcomeFromJson(jsonString);
 
-JoinGroupModel JoinGroupModelFromJson(String str) =>
+JoinGroupModel joinGroupModelFromJson(String str) =>
     JoinGroupModel.fromJson(json.decode(str));
 
 String joinGroupModelToJson(JoinGroupModel data) => json.encode(data.toJson());
